@@ -1,5 +1,5 @@
 import { reset } from "@/lib/seed";
-import { db } from "@/lib/db";
+import { recoverStaleRuns } from "@/lib/simulator";
 import { exclusive } from "@/lib/agent/service";
 import { clearLlmMemory } from "@/lib/agent/llm";
 import { api, demoGuard } from "@/lib/http";
@@ -8,9 +8,10 @@ export async function POST(request: Request) {
     const guard = demoGuard(request);
     if (guard) return guard;
     return exclusive(async () => {
-      if (await db.simulationRun.count({ where: { status: "RUNNING" } }))
+      const activeRun = await recoverStaleRuns();
+      if (activeRun)
         return Response.json(
-          { error: "Wait for the active simulation before resetting" },
+          { error: `Cannot reset while simulation ${activeRun.id} is running (${activeRun.processed}/${activeRun.n} processed). Wait for it to finish.`, runId: activeRun.id },
           { status: 409 },
         );
       clearLlmMemory();

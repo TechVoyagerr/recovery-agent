@@ -153,3 +153,19 @@ describe("honest recovery attribution", () => {
   });
 
 });
+
+
+it("recovers orphaned and timed-out simulations while preserving an active worker", async () => {
+  const { createRun, recoverStaleRuns } = await import("./simulator");
+  const orphan = await db.simulationRun.create({ data: { n: 1, seed: 7 } });
+  const active = await createRun(1, 7);
+  expect((await service.exclusive(recoverStaleRuns))?.id).toBe(active.id);
+  expect((await db.simulationRun.findUniqueOrThrow({ where: { id: orphan.id } })).status).toBe("FAILED");
+  const clock = vi.spyOn(Date, "now").mockReturnValue(Date.now() + 180001);
+  try {
+    expect(await service.exclusive(recoverStaleRuns)).toBeNull();
+    expect((await db.simulationRun.findUniqueOrThrow({ where: { id: active.id } })).status).toBe("FAILED");
+  } finally {
+    clock.mockRestore();
+  }
+});

@@ -26,7 +26,8 @@ export function OverviewPage() {
         const json = (await res.json()) as SimulationProgress;
         if (stop) return;
         setProgress(json);
-        if (json.status === "done" || json.status === "completed" || json.status === "error") {
+        if (["done", "completed", "error", "failed"].includes(json.status.toLowerCase())) {
+          if (json.status.toLowerCase() === "failed") setNotice(json.error || "Simulation interrupted. Please start another run.");
           setRunId(null);
           setBusy(null);
           refresh();
@@ -55,13 +56,16 @@ export function OverviewPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ n: 1000, speed: "live" }),
       });
-      if (!res.ok) throw new Error(`${res.status}`);
+      if (!res.ok) {
+        const failure = await res.json();
+        throw new Error(failure.error || `Request failed (${res.status})`);
+      }
       const json = (await res.json()) as { runId: string };
       setProgress(null);
       setRunId(json.runId);
-    } catch {
+    } catch (error) {
       setBusy(null);
-      setNotice("Could not start the simulation.");
+      setNotice(error instanceof Error ? error.message : "Could not start the simulation.");
     }
   };
 
@@ -70,11 +74,14 @@ export function OverviewPage() {
     setNotice(null);
     try {
       const res = await fetch("/api/reset", { method: "POST" });
-      if (!res.ok) throw new Error(`${res.status}`);
+      if (!res.ok) {
+        const failure = await res.json();
+        throw new Error(failure.error || `Request failed (${res.status})`);
+      }
       setProgress(null);
       refresh();
-    } catch {
-      setNotice("Reset failed.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Reset failed.");
     } finally {
       setBusy(null);
     }

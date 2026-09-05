@@ -1,6 +1,6 @@
 import { after } from "next/server";
 import { createRun, executeRun } from "@/lib/simulator";
-import { db } from "@/lib/db";
+import { recoverStaleRuns } from "@/lib/simulator";
 import { exclusive } from "@/lib/agent/service";
 import { api, demoGuard } from "@/lib/http";
 import { z } from "zod";
@@ -18,9 +18,10 @@ export async function POST(request: Request) {
       })
       .parse(await request.json());
     return exclusive(async () => {
-      if (await db.simulationRun.count({ where: { status: "RUNNING" } }))
+      const activeRun = await recoverStaleRuns();
+      if (activeRun)
         return Response.json(
-          { error: "A simulation is already running" },
+          { error: `Simulation ${activeRun.id} is still running (${activeRun.processed}/${activeRun.n} processed). Wait for it to finish before starting another.`, runId: activeRun.id },
           { status: 409 },
         );
       const run = await createRun(body.n, body.seed);

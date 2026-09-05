@@ -9,6 +9,27 @@ import {
 } from "./agent/service";
 import { BASE_RATES } from "./agent/rules";
 import { FailureReason, REASONS } from "./types";
+// Share ownership across route bundles and hot reloads; a new process starts empty.
+const runGlobal = globalThis as typeof globalThis & { simulationHeartbeats?: Map<string, number> };
+const activeRuns = runGlobal.simulationHeartbeats ??= new Map<string, number>();
+const STALE_AFTER_MS = 3 * 60 * 1000;
+
+// Call under exclusive(), just like creation/reset, to avoid admission races.
+export async function recoverStaleRuns() {
+  const running = await db.simulationRun.findMany({ where: { status: "RUNNING" } });
+  for (const run of running) {
+    const heartbeat = activeRuns.get(run.id);
+    if (heartbeat === undefined || Date.now() - heartbeat > STALE_AFTER_MS) {
+      await db.simulationRun.updateMany({
+        where: { id: run.id, status: "RUNNING" },
+        data: { status: "FAILED", completedAt: new Date(), error: "Simulation interrupted: its worker stopped or made no progress for 3 minutes." },
+      });
+      activeRuns.delete(run.id);
+    }
+  }
+  return db.simulationRun.findFirst({ where: { status: "RUNNING" } });
+}
+
 export function seededRandom(seed: number) {
   let a = seed | 0;
   return () => {
@@ -41,21 +62,23 @@ export function outcomeProbability(
 }
 export async function createRun(n: number, seed = 42) {
   await seedData();
-  return db.simulationRun.create({ data: { n, seed } });
+  const run = await db.simulationRun.create({ data: { n, seed } });
+  activeRuns.set(run.id, Date.now());
+  return run;
 }
 export async function executeRun(
   runId: string,
   speed: "instant" | "live" = "instant",
 ) {
-  const run = await db.simulationRun.findUniqueOrThrow({
-    where: { id: runId },
-  });
-  const rng = seededRandom(run.seed);
-  const customers = await db.customer.findMany({ orderBy: { id: "asc" } });
-  const start = Date.now();
-  // Fixed virtual epoch keeps salary-window outcomes reproducible across calendar dates.
-  const base = new Date("2026-07-27T00:00:00.000Z");
   try {
+    const run = await db.simulationRun.findUniqueOrThrow({
+      where: { id: runId },
+    });
+    const rng = seededRandom(run.seed);
+    const customers = await db.customer.findMany({ orderBy: { id: "asc" } });
+    const start = Date.now();
+    // Fixed virtual epoch keeps salary-window outcomes reproducible across calendar dates.
+    const base = new Date("2026-07-27T00:00:00.000Z");
     await event("SIMULATION_STARTED", "Recovery simulation started", {
       runId,
       n: run.n,
@@ -68,6 +91,7 @@ export async function executeRun(
         if (delay > 0) await new Promise((r) => setTimeout(r, delay));
       }
       await exclusive(async () => {
+        if (!activeRuns.has(runId)) throw new Error("Simulation worker is no longer active");
         const reason = REASONS[Math.floor(rng() * REASONS.length)];
         const customer = customers[Math.floor(rng() * customers.length)];
         const method = reason.startsWith("CARD")
@@ -143,6 +167,7 @@ export async function executeRun(
           where: { id: runId },
           data: { processed: { increment: 1 } },
         });
+        activeRuns.set(runId, Date.now());
       });
     }
     await db.simulationRun.update({
@@ -153,7 +178,7 @@ export async function executeRun(
   } catch (error) {
     console.error("Simulation failed", error);
     await db.simulationRun.updateMany({
-      where: { id: runId },
+      where: { id: runId, status: "RUNNING" },
       data: {
         status: "FAILED",
         error:
@@ -161,6 +186,8 @@ export async function executeRun(
         completedAt: new Date(),
       },
     });
+  } finally {
+    activeRuns.delete(runId);
   }
   return db.simulationRun.findUnique({ where: { id: runId } });
 }
