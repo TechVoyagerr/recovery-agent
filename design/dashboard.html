@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Recovery Agent · Razorpay Dashboard</title>
+<title>Recovery Agent · payment gateway Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -109,7 +109,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
         </div>
         <div class="leading-tight">
           <div class="text-[14px] font-semibold tracking-[-.01em]">Recovery Agent</div>
-          <div class="text-[10.5px] text-subtle">by Razorpay</div>
+          <div class="text-[10.5px] text-subtle">by the payment gateway</div>
         </div>
         <button id="closeSidebar" class="ml-auto rounded-md p-1.5 text-muted hover:bg-surface2 hover:text-ink lg:hidden" aria-label="Close navigation">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -242,7 +242,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
             <div class="flex flex-wrap items-center gap-6">
               <div class="min-w-0">
                 <p class="eyebrow flex items-center gap-2 text-rzp-soft">
-                  <span class="h-1.5 w-1.5 rounded-full bg-danger dot-live"></span> Money left on the table — right now
+                  <span class="h-1.5 w-1.5 rounded-full bg-danger dot-live"></span> Money left on the table, right now
                 </p>
                 <p id="moneyCounter" class="mt-2 text-[38px] font-bold leading-none tracking-[-.025em] tnum text-white sm:text-[46px]">₹0</p>
                 <p class="mt-2 text-[13px] text-rzp-soft/80">Failed payments across Indian merchants since you opened this page. India's average checkout failure rate is <span class="font-semibold text-white">~25%</span>.</p>
@@ -503,7 +503,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
                     <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-surface3 text-subtle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
                     <span class="min-w-0">
                       <span class="block text-[13.5px] font-semibold">App push</span>
-                      <span class="block text-[12.5px] text-muted">Requires the Razorpay SDK push token. Not connected.</span>
+                      <span class="block text-[12.5px] text-muted">Requires the payment gateway SDK push token. Not connected.</span>
                     </span>
                     <button class="switch" role="switch" aria-checked="false" aria-label="App push channel"><span class="knob"></span></button>
                   </div>
@@ -524,7 +524,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
                     <p class="mt-1.5 text-[11.5px] text-subtle">Nudges queue up and fire at 08:00.</p>
                   </div>
                   <div>
-                    <label class="mb-1.5 block text-[12.5px] font-medium" for="maxNudges">Max nudges per customer / 24h — <span id="maxNudgesVal" class="font-semibold tnum text-rzp">2</span></label>
+                    <label class="mb-1.5 block text-[12.5px] font-medium" for="maxNudges">Max nudges per customer / 24h, <span id="maxNudgesVal" class="font-semibold tnum text-rzp">2</span></label>
                     <input id="maxNudges" type="range" min="1" max="5" value="2" class="w-full">
                     <p class="mt-1.5 text-[11.5px] text-subtle">Above 3, unsubscribes rise faster than recoveries.</p>
                   </div>
@@ -544,7 +544,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
 
             <div class="space-y-4">
               <div class="card p-5 shadow-raised">
-                <h2 class="text-[15px] font-semibold">Razorpay connection</h2>
+                <h2 class="text-[15px] font-semibold">payment gateway connection</h2>
                 <ul class="mt-3.5 space-y-3">
                   <li class="flex items-center gap-2.5">
                     <span class="h-2 w-2 shrink-0 rounded-full bg-success"></span>
@@ -553,7 +553,7 @@ input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;hei
                   </li>
                   <li class="flex items-center gap-2.5">
                     <span class="h-2 w-2 shrink-0 rounded-full bg-success"></span>
-                    <span class="min-w-0"><span class="block text-[13px] font-medium">Webhook</span><span class="block truncate font-mono text-[11.5px] text-muted">/api/webhooks/razorpay</span></span>
+                    <span class="min-w-0"><span class="block text-[13px] font-medium">Webhook</span><span class="block truncate font-mono text-[11.5px] text-muted">Signed payment gateway webhook endpoint</span></span>
                     <span class="ml-auto rounded-sm bg-success-soft px-1.5 py-0.5 text-[10.5px] font-semibold text-success">200 OK</span>
                   </li>
                   <li class="flex items-center gap-2.5">
@@ -744,20 +744,20 @@ const initials = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(
 const phoneFor = i => '+91 9' + String(8000000 + i*13711).slice(0,7).replace(/(\d{4})(\d{3})/,'$1$2') + '••';
 const emailFor = n => n.toLowerCase().split(' ')[0] + '.' + n.toLowerCase().split(' ')[1].slice(0,3) + '@gmail.com';
 
-/* — message copy per reason — */
+/*, message copy per reason, */
 function messageFor(tx){
   const first = tx.name.split(' ')[0];
   const amt = inr(tx.amount);
   switch(tx.reason){
-    case 'OTP_TIMEOUT': return `Hi ${first}! Your ${amt} order at Urban Basket didn't go through — the OTP expired. No need to start over — just tap to pay with ${tx.upiApp || 'UPI'}: rzp.io/l/ub-${tx.short} ✅ Cart held for 48h.`;
-    case 'BANK_DOWN': return `Hi ${first}, ${tx.bank} was having a rough few minutes and your ${amt} payment couldn't go through. It's back up now — one tap to finish: rzp.io/l/ub-${tx.short}`;
-    case 'INSUFFICIENT_FUNDS': return `Hi ${first}! Your Urban Basket order of ${amt} is still saved. Whenever you're ready, you can pay here — UPI, card or netbanking: rzp.io/l/ub-${tx.short} 🧺`;
-    case 'CARD_EXPIRED': return `Hi ${first}, the card ending ${tx.last4} on your ${amt} order has expired. Update it securely in 20 seconds — we never see the number: rzp.io/l/ub-${tx.short}`;
-    case 'CARD_DECLINED': return `Hi ${first}, your bank declined the ${amt} payment on the card ending ${tx.last4}. UPI usually goes through instantly — try here: rzp.io/l/ub-${tx.short}`;
+    case 'OTP_TIMEOUT': return `Hi ${first}! Your ${amt} order at Urban Basket didn't go through, the OTP expired. No need to start over, just tap to pay with ${tx.upiApp || 'UPI'}: rzp.io/l/ub-${tx.short} ✅ Cart held for 48h.`;
+    case 'BANK_DOWN': return `Hi ${first}, ${tx.bank} was having a rough few minutes and your ${amt} payment couldn't go through. It's back up now, one tap to finish: rzp.io/l/ub-${tx.short}`;
+    case 'INSUFFICIENT_FUNDS': return `Hi ${first}! Your Urban Basket order of ${amt} is still saved. Whenever you're ready, you can pay here, UPI, card or netbanking: rzp.io/l/ub-${tx.short} 🧺`;
+    case 'CARD_EXPIRED': return `Hi ${first}, the card ending ${tx.last4} on your ${amt} order has expired. Update it securely in 20 seconds, we never see the number: rzp.io/l/ub-${tx.short}`;
+    case 'CARD_DECLINED': return `Hi ${first}, your bank declined the ${amt} payment on the card ending ${tx.last4}. UPI usually goes through instantly, try here: rzp.io/l/ub-${tx.short}`;
     case 'UPI_APP_ERROR': return `Hi ${first}! ${tx.upiApp} threw an error on your ${amt} payment. Here's a fresh link that works on any UPI app: rzp.io/l/ub-${tx.short}`;
-    case 'NETWORK_DROP': return `Hi ${first}, looks like your connection dropped mid-payment. Your ${amt} cart is exactly where you left it — resume here: rzp.io/l/ub-${tx.short}`;
+    case 'NETWORK_DROP': return `Hi ${first}, looks like your connection dropped mid-payment. Your ${amt} cart is exactly where you left it, resume here: rzp.io/l/ub-${tx.short}`;
     case 'CART_ABANDONED': return `Hi ${first}! Your ${tx.product} (${amt}) is still in your Urban Basket cart. Checkout takes one tap: rzp.io/l/ub-${tx.short} 🛒`;
-    case 'LIMIT_EXCEEDED': return `Hi ${first}, your ${amt} payment crossed your ${tx.bank} per-transaction limit. Netbanking has no such cap — pay here: rzp.io/l/ub-${tx.short}`;
+    case 'LIMIT_EXCEEDED': return `Hi ${first}, your ${amt} payment crossed your ${tx.bank} per-transaction limit. Netbanking has no such cap, pay here: rzp.io/l/ub-${tx.short}`;
     default: return `Hi ${first}, you cancelled the ${amt} payment at Urban Basket. If it was a mistake, your cart is saved for 48 hours: rzp.io/l/ub-${tx.short}`;
   }
 }
@@ -768,11 +768,11 @@ function reasoningFor(tx){
   const ch = CHANNELS[tx.channel].label;
   const pct = Math.round(r.rate*100);
   return `Detected ${r.low} on a ${inr(tx.amount)} ${tx.method} payment from ${first} (${tx.city}). ` +
-         `Chose ${ch} ${tx.delayLabel} because ${r.plural} recover ${pct}% with this play, versus ${Math.round(r.rate*100*0.42)}% on a generic email blast — ${r.why}. ` +
+         `Chose ${ch} ${tx.delayLabel} because ${r.plural} recover ${pct}% with this play, versus ${Math.round(r.rate*100*0.42)}% on a generic email blast, ${r.why}. ` +
          `${first} has opened ${tx.openRate}% of past ${ch} nudges, so no fallback channel was queued yet.`;
 }
 
-/* — build ~50 transactions — */
+/*, build ~50 transactions, */
 const NOW = new Date('2026-02-15T18:42:00+05:30');
 const TX = [];
 const reasonWeights = ['OTP_TIMEOUT','OTP_TIMEOUT','OTP_TIMEOUT','INSUFFICIENT_FUNDS','INSUFFICIENT_FUNDS','INSUFFICIENT_FUNDS','BANK_DOWN','BANK_DOWN','UPI_APP_ERROR','UPI_APP_ERROR','CARD_DECLINED','CARD_DECLINED','NETWORK_DROP','CART_ABANDONED','CART_ABANDONED','CARD_EXPIRED','LIMIT_EXCEEDED','USER_CANCELLED'];
@@ -1016,7 +1016,7 @@ function buildTimingChart(){
 $$('[data-range]').forEach(b => b.addEventListener('click', () => {
   $$('[data-range]').forEach(x => x.classList.remove('seg-on'));
   b.classList.add('seg-on');
-  toast(`Range set to ${b.textContent.trim()} — 1,284 events re-scored.`);
+  toast(`Range set to ${b.textContent.trim()}, 1,284 events re-scored.`);
 }));
 
 /* ════════════════════════ 9. live agent feed ════════════════════════ */
@@ -1159,7 +1159,7 @@ function randomEvent(){
     reasoning: t.reasoning, meta:[`Confidence ${t.confidence.toFixed(2)}`, `${r.play}`] };
   if (kind < .88) return { stage:'ACT', icon:ICONS.act, time,
     title:`Payment link created and sent · ${inr(t.amount)}`,
-    reasoning:`Created a Razorpay Payment Link pre-filled with ${t.name.split(' ')[0]}'s cart and a 48-hour expiry, then sent it on ${CHANNELS[t.channel].label}. ${r.why.charAt(0).toUpperCase()+r.why.slice(1)}.`,
+    reasoning:`Created a payment link pre-filled with ${t.name.split(' ')[0]}'s cart and a 48-hour expiry, then sent it on ${CHANNELS[t.channel].label}. ${r.why.charAt(0).toUpperCase()+r.why.slice(1)}.`,
     link:`rzp.io/l/ub-${t.short}`, message:t.message, channel:t.channel, meta:[t.city, t.method] };
   return { stage:'LEARN', icon:ICONS.win, time,
     title:`Recovered ${inr(t.amount)} from ${t.name.split(' ')[0]}`,
@@ -1222,7 +1222,7 @@ function runSimulation(cfg){
   const steps = [
     { at:0, stage:0, ev:{ stage:'DETECT', icon:ICONS.detect, time:now(),
         title:`Failed ${cfg.method} payment · ${inr(cfg.amount)} · ${cfg.city}`,
-        reasoning:`Webhook <span class="font-mono">payment.failed</span> received for ${cfg.name}. Raw gateway error captured, order held open, customer contact resolved from the Razorpay customer record in 240ms.`,
+        reasoning:`Webhook <span class="font-mono">payment.failed</span> received for ${cfg.name}. Raw gateway error captured, order held open, customer contact resolved from the payment gateway customer record in 240ms.`,
         meta:[`<span class="font-mono">${tx.id}</span>`, cfg.method, cfg.city] } },
     { at:1300, stage:1, ev:{ stage:'DIAGNOSE', icon:ICONS.diagnose, time:now(),
         title:`Classified as ${r.label}`,
@@ -1233,7 +1233,7 @@ function runSimulation(cfg){
         reasoning: tx.reasoning, meta:[`Confidence ${tx.confidence.toFixed(2)}`, CHANNELS[channel].label, tx.delayLabel] } },
     { at:4600, stage:3, ev:{ stage:'ACT', icon:ICONS.act, time:now(),
         title:`Payment link created and nudge sent`,
-        reasoning:`Created a Razorpay Payment Link for ${inr(cfg.amount)} with a 48-hour expiry and ${first}'s saved cart attached, then delivered the message on ${CHANNELS[channel].label}.`,
+        reasoning:`Created a payment link for ${inr(cfg.amount)} with a 48-hour expiry and ${first}'s saved cart attached, then delivered the message on ${CHANNELS[channel].label}.`,
         link:`rzp.io/l/ub-${short}`, message:tx.message, channel, meta:[`${inr(cfg.amount)}`, 'Expires in 48h'] } },
     { at:7200, stage:4, ev:null },
   ];
@@ -1247,8 +1247,8 @@ function runSimulation(cfg){
         ? { stage:'LEARN', icon:ICONS.win, time:now(), title:`Recovered ${inr(cfg.amount)} from ${first} 🎉`,
             reasoning:`Link paid ${tx.recoverMins} minutes after the nudge. Outcome scored as a win for ${r.plural} → ${CHANNELS[channel].label} → ${tx.delayLabel}; the agent nudged that play's weight up for the next matching failure.`,
             meta:[`+${inr(cfg.amount)}`, `${tx.recoverMins}m to recover`, 'Play reinforced'] }
-        : { stage:'LEARN', icon:ICONS.learn, time:now(), title:`No payment yet — fallback scheduled`,
-            reasoning:`${first} opened the link but did not pay. A single SMS fallback is queued for 4 hours from now, inside quiet-hours rules. If that fails, the agent stops — a third nudge costs more trust than it recovers.`,
+        : { stage:'LEARN', icon:ICONS.learn, time:now(), title:`No payment yet, fallback scheduled`,
+            reasoning:`${first} opened the link but did not pay. A single SMS fallback is queued for 4 hours from now, inside quiet-hours rules. If that fails, the agent stops, a third nudge costs more trust than it recovers.`,
             meta:['Fallback: SMS', 'In 4h', 'Nudge budget 2/2'] });
       if (won){ saved += cfg.amount; $('#moneySaved').textContent = inr(saved); toast(`Recovered ${inr(cfg.amount)} from ${first}.`); }
       else toast(`Fallback queued for ${first}.`);
@@ -1352,7 +1352,7 @@ function openDrawer(id){
         ${timelineStep({ icon:ICONS.detect, tone:'danger', title:'Payment failed', time: tm(0),
           body:`<span class="font-mono text-[11.5px]">payment.failed</span> webhook received. ${t.method === 'UPI' ? `${t.upiApp} collect request on ${t.bank}` : t.method === 'Card' ? `Card ending ${t.last4} on ${t.bank}` : `${t.bank} netbanking session`}. Order held open, not cancelled.` })}
         ${timelineStep({ icon:ICONS.diagnose, tone:'warning', title:`Diagnosed: ${r.label}`, time: tm(1400),
-          body:`Gateway error mapped to <span class="font-mono text-[11.5px]">${t.reason}</span> with 0.94 certainty. This reason recovers <span class="font-semibold text-ink">${Math.round(r.rate*100)}%</span> historically — above the 15% chase threshold, so it was queued for a decision.` })}
+          body:`Gateway error mapped to <span class="font-mono text-[11.5px]">${t.reason}</span> with 0.94 certainty. This reason recovers <span class="font-semibold text-ink">${Math.round(r.rate*100)}%</span> historically, above the 15% chase threshold, so it was queued for a decision.` })}
         ${timelineStep({ icon:ICONS.decide, tone:'violet', title:'Decided the play', time: tm(1400 + t.decideMs),
           body:`<p class="mb-2.5">${t.reasoning}</p>
                 <div class="rounded-md border border-line bg-surface2 p-3">
@@ -1363,7 +1363,7 @@ function openDrawer(id){
                   </div>
                 </div>` })}
         ${timelineStep({ icon:ICONS.act, tone:'info', title:'Payment link created', time: tm(1400 + t.decideMs + 900),
-          body:`Razorpay Payment Link for ${inr(t.amount)}, 48-hour expiry, cart contents preserved.
+          body:`payment link for ${inr(t.amount)}, 48-hour expiry, cart contents preserved.
                 <div class="mt-2 flex items-center gap-2 rounded-md border border-line bg-surface2 px-3 py-2">
                   <span class="truncate font-mono text-[11.5px] text-rzp">rzp.io/l/ub-${t.short}</span>
                   <span class="ml-auto shrink-0 rounded-sm bg-success-soft px-1.5 py-0.5 text-[10px] font-semibold text-success">201 Created</span>

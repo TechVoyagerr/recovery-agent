@@ -1,7 +1,7 @@
-# Recovery Agent — Design System
+# Recovery Agent, Design System
 
-**Product:** an autonomous AI agent that catches every failed or abandoned Razorpay payment and recovers it.
-**Surface:** a merchant dashboard that should feel like it was shipped by the Razorpay Dashboard team — not a hackathon skin on top of it.
+**Product:** an autonomous AI agent that catches every failed or abandoned payment gateway payment and recovers it.
+**Surface:** a merchant dashboard that should feel like it was shipped by the payment gateway Dashboard team, not a hackathon skin on top of it.
 
 Design principle: **the agent's thinking is the product.** Every screen exposes what the agent saw, what it decided, why, and what it earned back. Numbers are money; money is set in tabular figures and never wobbles.
 
@@ -9,13 +9,13 @@ Design principle: **the agent's thinking is the product.** Every screen exposes 
 
 ## 1. Palette
 
-Dark-mode-first. Light mode is a first-class alternate, not an afterthought — every token has a value in both, and all components read semantic tokens, never raw hex.
+Dark-mode-first. Light mode is a first-class alternate, not an afterthought, every token has a value in both, and all components read semantic tokens, never raw hex.
 
 ### 1.1 Brand
 
 | Token | Hex | Use |
 | --- | --- | --- |
-| `brand.navy` | `#0C2451` | Razorpay deep navy. Landing hero ground, light-mode headings, agent-chrome accents. |
+| `brand.navy` | `#0C2451` | payment gateway deep navy. Landing hero ground, light-mode headings, agent-chrome accents. |
 | `brand.navy-deep` | `#081A3B` | Navy pressed / gradient stop. |
 | `brand.blue` | `#2B84EA` | **Primary.** Buttons, active nav, focus ring, primary chart series. |
 | `brand.blue-bright` | `#528FF0` | Hover, links, glow, gradient stop. |
@@ -37,7 +37,7 @@ Dark-mode-first. Light mode is a first-class alternate, not an afterthought — 
 | `info` | `#528FF0` | Scheduled, queued, informational. |
 | `violet` | `#8B7BF7` | Learning / insight cards, model-derived numbers. |
 
-### 1.3 Neutrals — semantic surface tokens
+### 1.3 Neutrals, semantic surface tokens
 
 | Token | Dark | Light | Use |
 | --- | --- | --- | --- |
@@ -81,18 +81,18 @@ System fallback: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-se
 | Mono (IDs, keys) | 12 / 1.5 | 500 | `ui-monospace, 'SF Mono', Menlo` |
 
 Every currency, percentage, duration and count uses `tabular-nums` so live-updating numbers never reflow.
-Currency format: `₹1,24,850` — Indian grouping (`en-IN`), no decimals above ₹1,000; lakh/crore short form (`₹8.4L`, `₹1.2Cr`) only in hero stats and axis labels.
+Currency format: `₹1,24,850`, Indian grouping (`en-IN`), no decimals above ₹1,000; lakh/crore short form (`₹8.4L`, `₹1.2Cr`) only in hero stats and axis labels.
 
 ---
 
 ## 3. Spacing, radius, elevation
 
-**Spacing** — 4px base: `4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 56 · 80`.
+**Spacing**, 4px base: `4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 56 · 80`.
 Card padding 20 (desktop) / 16 (mobile). Grid gutter 20. Section rhythm 32. Sidebar 248px, collapses under 1024px. Content max-width 1440px.
 
-**Radius** — `sm 6` (chips, inputs) · `md 10` (buttons, small cards) · `lg 14` (cards, drawer) · `xl 20` (hero panels, modal) · `full` (pills, avatars, toggles).
+**Radius**, `sm 6` (chips, inputs) · `md 10` (buttons, small cards) · `lg 14` (cards, drawer) · `xl 20` (hero panels, modal) · `full` (pills, avatars, toggles).
 
-**Elevation** — dark mode leans on borders and inner light, not black shadow.
+**Elevation**, dark mode leans on borders and inner light, not black shadow.
 
 | Level | Dark | Light |
 | --- | --- | --- |
@@ -106,17 +106,17 @@ Card padding 20 (desktop) / 16 (mobile). Grid gutter 20. Section rhythm 32. Side
 
 ## 4. Components
 
-**Chrome** — AppShell · Sidebar (nav items, agent status footer) · Topbar (merchant switcher, environment pill, theme toggle, live indicator) · MobileNav (hamburger → slide-over) · PageHeader (title, subtitle, actions).
+**Chrome**, AppShell · Sidebar (nav items, agent status footer) · Topbar (merchant switcher, environment pill, theme toggle, live indicator) · MobileNav (hamburger → slide-over) · PageHeader (title, subtitle, actions).
 
-**Data display** — KpiCard (label, value, delta, sparkline, tone) · LiveMoneyCounter (ticking ₹ at-risk) · StatTile · Badge (status/reason/channel variants) · ConfidenceMeter (segmented bar + %) · Table (sticky header, sortable, expandable row) · Drawer (right slide-over, 520px) · Timeline (vertical, node + connector, per-step meta) · WhatsAppBubble / SmsBubble / EmailCard (channel-accurate message previews) · HeatmapMatrix (reason × channel recovery rate) · InsightCard (violet accent, evidence line, sample size) · EmptyState · Skeleton.
+**Data display**, KpiCard (label, value, delta, sparkline, tone) · LiveMoneyCounter (ticking ₹ at-risk) · StatTile · Badge (status/reason/channel variants) · ConfidenceMeter (segmented bar + %) · Table (sticky header, sortable, expandable row) · Drawer (right slide-over, 520px) · Timeline (vertical, node + connector, per-step meta) · WhatsAppBubble / SmsBubble / EmailCard (channel-accurate message previews) · HeatmapMatrix (reason × channel recovery rate) · InsightCard (violet accent, evidence line, sample size) · EmptyState · Skeleton.
 
-**Charts** — RecoveryTimelineChart (dual-line area, failed vs recovered per hour) · ReasonBarChart (horizontal, recovery rate per failure reason) · ChannelEffectivenessChart (grouped bars: sent / opened / recovered).
+**Charts**, RecoveryTimelineChart (dual-line area, failed vs recovered per hour) · ReasonBarChart (horizontal, recovery rate per failure reason) · ChannelEffectivenessChart (grouped bars: sent / opened / recovered).
 
-**Agent** — AgentFeed (virtualised stream) · AgentEventCard (stage chip, headline, reasoning paragraph, artefacts) · StagePipeline (DETECT → DIAGNOSE → DECIDE → ACT → LEARN with active state) · TriggerFailureModal (reason / amount / method / channel → live simulation) · ReasoningBlock (cyan left-rule, italic-free plain English).
+**Agent**, AgentFeed (virtualised stream) · AgentEventCard (stage chip, headline, reasoning paragraph, artefacts) · StagePipeline (DETECT → DIAGNOSE → DECIDE → ACT → LEARN with active state) · TriggerFailureModal (reason / amount / method / channel → live simulation) · ReasoningBlock (cyan left-rule, italic-free plain English).
 
-**Forms** — Button (primary/secondary/ghost/danger, sm/md/lg) · IconButton · Select · Input · SegmentedControl · Toggle · RadioCard (autonomy levels) · Slider (max nudges) · TimeRangePicker (quiet hours) · FilterBar (chips + clear-all).
+**Forms**, Button (primary/secondary/ghost/danger, sm/md/lg) · IconButton · Select · Input · SegmentedControl · Toggle · RadioCard (autonomy levels) · Slider (max nudges) · TimeRangePicker (quiet hours) · FilterBar (chips + clear-all).
 
-**Feedback** — Toast · Tooltip · InlineAlert · KeyStatusRow (Razorpay key id, masked secret, webhook health dot).
+**Feedback**, Toast · Tooltip · InlineAlert · KeyStatusRow (payment gateway key id, masked secret, webhook health dot).
 
 ---
 
@@ -130,11 +130,11 @@ Rules:
 2. **Feed entrance**: new event slides in from `translateY(-8px)` + fades over `slow`, with a 600ms cyan left-rule pulse. Never animate more than one entering item at a time.
 3. **Agent pipeline**: stages advance on `deliberate`; the active stage gets `glow` elevation and a 1.6s breathing ring.
 4. **Drawer**: 260ms slide + backdrop fade; content stagger max 3 items × 40ms.
-5. **Charts** animate once on first paint (700ms), never on filter change — filters re-render instantly so the number you're reading is the number you get.
+5. **Charts** animate once on first paint (700ms), never on filter change, filters re-render instantly so the number you're reading is the number you get.
 6. **Hover** is `fast` and colour/border only. No layout-shifting hovers in tables.
 7. `@media (prefers-reduced-motion: reduce)` disables all of the above: counters snap to final value, feed items appear, pipeline steps toggle.
 
-**Accessibility** — focus ring `0 0 0 2px bg, 0 0 0 4px brand.blue` on every interactive element; all nav/table/filter controls are real `<button>`/`<a>`; drawer and modal trap focus and close on `Esc`; live feed is `aria-live="polite"`; colour is never the only status carrier (badge always carries a word).
+**Accessibility**, focus ring `0 0 0 2px bg, 0 0 0 4px brand.blue` on every interactive element; all nav/table/filter controls are real `<button>`/`<a>`; drawer and modal trap focus and close on `Esc`; live feed is `aria-live="polite"`; colour is never the only status carrier (badge always carries a word).
 
 ---
 
@@ -147,7 +147,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // semantic — driven by CSS vars, so one component works in both themes
+        // semantic, driven by CSS vars, so one component works in both themes
         bg:        'rgb(var(--bg) / <alpha-value>)',
         surface:   'rgb(var(--surface) / <alpha-value>)',
         surface2:  'rgb(var(--surface-2) / <alpha-value>)',
@@ -205,7 +205,7 @@ module.exports = {
 ```
 
 ```css
-/* token layer — :root is dark (dark-first); .light re-declares */
+/* token layer, :root is dark (dark-first); .light re-declares */
 :root {
   --bg: 7 13 27;         --surface: 13 21 38;   --surface-2: 19 30 51;  --surface-3: 26 39 64;
   --border: 30 44 72;    --border-strong: 44 61 94;
@@ -224,4 +224,4 @@ module.exports = {
 
 ## 7. Voice
 
-Numbers first, then the reason. The agent speaks in complete plain-English sentences with a causal clause and a number in it — "Sent a UPI intent link on WhatsApp within 90s **because** OTP timeouts recover 71% when retried immediately." Never "AI-powered", never "leveraging". Failure reasons are shown in human words (`OTP timed out`) with the raw enum available in mono type for engineers.
+Numbers first, then the reason. The agent speaks in complete plain-English sentences with a causal clause and a number in it, "Sent a UPI intent link on WhatsApp within 90s **because** OTP timeouts recover 71% when retried immediately." Never "AI-powered", never "leveraging". Failure reasons are shown in human words (`OTP timed out`) with the raw enum available in mono type for engineers.

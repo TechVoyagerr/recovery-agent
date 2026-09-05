@@ -2,7 +2,7 @@
 
 Live demo: <URL added after deploy>
 
-Recover failed-payment revenue with a reason-specific, consent-aware agent that invites customers back to Razorpay hosted checkout.
+Recover failed-payment revenue with a reason-specific, consent-aware agent that invites customers back to payment gateway hosted checkout.
 
 ## Why this wins
 
@@ -42,7 +42,7 @@ The image retains Prisma CLI and tsx dependencies for startup initialization. It
 
 ```mermaid
 flowchart LR
-  W[Signed Razorpay webhook] --> R[Classifier and rule engine]
+  W[Signed payment gateway webhook] --> R[Classifier and rule engine]
   S[Seeded simulator] --> R
   B[(SQLite learning)] --> R
   R --> Q[Scheduled recovery attempt]
@@ -107,7 +107,7 @@ An actual seed-42 trace for Arjun Nair:
 
 **Refusal example:** `POST /api/inbound` with `{"from":"whatsapp:+919000000001","text":"STOP"}` sets the matching customer to `optedOut`, cancels every PENDING attempt and logs `OPT_OUT`. A later OTP failure receives a `none` channel decision. No Payment Link or MessageEvent is created for that new refusal. Tests also change consent between planning and dispatch and verify zero notifier calls. `UNSUBSCRIBE` and `BAND` work case-insensitively, as do form fields `From` and `Body`.
 
-## Razorpay products used
+## payment gateway products used
 
 - **Payment Links:** SDK integration creates hosted checkout invitations with automatic provider notifications disabled. Demo traffic always uses mock links.
 - **Payments and Orders webhooks:** HMAC-verified failure detection and paid-state reconciliation, including `payment_link.paid` attribution and replay deduplication.
@@ -127,7 +127,7 @@ An actual seed-42 trace for Arjun Nair:
 | `GET /api/simulate/[runId]` | Persisted run progress, synthetic flag |
 | `POST /api/agent/run` | Plan failures, dispatch due reminders, settle stale attempts |
 | `POST /api/inbound` | JSON `{from,text}` or URL-encoded `From` / `Body` opt-out |
-| `POST /api/webhooks/razorpay` | Raw signed Razorpay event, requires webhook secret |
+| Signed payment gateway webhook endpoint | Raw signed payment gateway event, requires webhook secret |
 | `POST /api/reset` | Erase demo dataset and learning, reseed customers |
 
 Invalid input returns 400, missing records 404, conflicting runs/reset 409. Signed payment amounts must match. Production inbound integrations must authenticate the provider and forward through an adapter with the bearer token; direct Twilio signature validation is not implemented.
@@ -138,10 +138,10 @@ Invalid input returns 400, missing records 404, conflicting runs/reset 409. Sign
 | --- | --- |
 | Implemented | Eleven-reason rules, durable scheduling, opt-out ingestion and dispatch enforcement, signed webhook verification, deduplication, matching-link attribution, learning, APIs, SSE and dashboard |
 | Simulated | Seeded customer failures, recovery outcomes, mock Payment Links and ConsoleNotifier delivery |
-| Optional, not live-verified | Real Razorpay link creation and OpenRouter copy polish |
+| Optional, not live-verified | Real payment gateway link creation and OpenRouter copy polish |
 | Limitations | Single merchant, local SQLite and one long-lived server process; no distributed queue/locks, provider outbox, real messaging adapter, provider inbound signature adapter or authenticated read APIs |
 
-The Render blueprint enables `DEMO_PUBLIC=true` for the hackathon: anyone can invoke demo mutation APIs, including reset and inbound opt-out, without the generated token. Use synthetic data only and leave live provider credentials unset. Set `DEMO_PUBLIC=false` to restore the production bearer-token guard. Read APIs remain public. Signed Razorpay webhook verification is unchanged.
+The Render blueprint enables `DEMO_PUBLIC=true` for the hackathon: anyone can invoke demo mutation APIs, including reset and inbound opt-out, without the generated token. Use synthetic data only and leave live provider credentials unset. Set `DEMO_PUBLIC=false` to restore the production bearer-token guard. Read APIs remain public. Signed payment gateway webhook verification is unchanged.
 
 Render Free has no persistent disk: database changes are lost on redeploy, restart or spin-down, and the next empty boot recreates the seeded demo. Free services sleep after 15 minutes idle and cold starts include initialization; see [Render Free limitations](https://render.com/docs/free). Run one instance only. The container starts Next, not the optional reminder worker; instant simulations settle their own attempts, while manually scheduled reminders need `POST /api/agent/run` or a separately operated worker.
 

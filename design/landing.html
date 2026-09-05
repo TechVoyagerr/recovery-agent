@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Recovery Agent — every failed payment gets a second chance</title>
-<meta name="description" content="An autonomous AI agent that catches every failed or abandoned Razorpay payment, diagnoses why it failed, and recovers it. Built for the Razorpay AI Builder Internship 2026." />
+<title>Recovery Agent, every failed payment gets a second chance</title>
+<meta name="description" content="An autonomous AI agent that catches every failed or abandoned payment gateway payment, diagnoses why it failed, and recovers it. Built for a payments AI buildathon." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,13 +102,13 @@ details[open] .chev{ transform:rotate(180deg); }
       </span>
       <span class="leading-tight">
         <span class="block text-[14px] font-semibold tracking-[-.01em]">Recovery Agent</span>
-        <span class="hidden text-[10.5px] text-subtle sm:block">Razorpay AI Builder 2026 · Track 3</span>
+        <span class="hidden text-[10.5px] text-subtle sm:block">Payments AI buildathon · Track 3</span>
       </span>
     </a>
     <nav class="ml-auto hidden items-center gap-1 md:flex" aria-label="Sections">
       <a href="#problem" class="rounded-md px-3 py-2 text-[13.5px] font-medium text-muted transition-colors duration-150 hover:text-ink">The problem</a>
       <a href="#how" class="rounded-md px-3 py-2 text-[13.5px] font-medium text-muted transition-colors duration-150 hover:text-ink">How it works</a>
-      <a href="#stack" class="rounded-md px-3 py-2 text-[13.5px] font-medium text-muted transition-colors duration-150 hover:text-ink">Built on Razorpay</a>
+      <a href="#stack" class="rounded-md px-3 py-2 text-[13.5px] font-medium text-muted transition-colors duration-150 hover:text-ink">Built on the payment gateway</a>
       <a href="#faq" class="rounded-md px-3 py-2 text-[13.5px] font-medium text-muted transition-colors duration-150 hover:text-ink">FAQ</a>
     </nav>
     <button id="themeBtn" class="ml-auto rounded-md border border-line bg-surface p-2 text-muted transition-colors duration-150 hover:text-ink md:ml-2" aria-label="Toggle colour theme">
@@ -126,14 +126,14 @@ details[open] .chev{ transform:rotate(180deg); }
     <div>
       <span class="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[12px] font-medium text-muted">
         <span class="h-1.5 w-1.5 rounded-full bg-success dot-live"></span>
-        Autonomous agent · live on Razorpay webhooks
+        Autonomous agent · live on payment gateway webhooks
       </span>
       <h1 class="mt-5 text-[40px] font-bold leading-[1.06] tracking-[-.03em] sm:text-[54px] lg:text-[60px]">
         Every failed payment gets a<br class="hidden sm:block"> second chance. <span class="grad-text hero-grad">Automatically.</span>
       </h1>
       <p class="mt-5 max-w-[540px] text-[16px] leading-relaxed text-muted">
         One in four Indian checkouts fails. Recovery Agent catches every failure the moment the webhook lands, works out
-        <em class="not-italic font-medium text-ink">why</em> it failed, and wins the payment back — with the right message, on the right channel, at the right minute. No dashboards to watch. No rules to write.
+        <em class="not-italic font-medium text-ink">why</em> it failed, and wins the payment back, with the right message, on the right channel, at the right minute. No dashboards to watch. No rules to write.
       </p>
       <div class="mt-7 flex flex-wrap items-center gap-3">
         <a href="dashboard.html" class="inline-flex items-center gap-2 rounded-md bg-rzp px-5 py-3 text-[14px] font-semibold text-white shadow-glow transition-colors duration-150 hover:bg-rzp-bright">
@@ -173,7 +173,7 @@ details[open] .chev{ transform:rotate(180deg); }
             </span>
             <div class="min-w-0">
               <p class="text-[13px] font-semibold">Diagnosed: OTP timed out</p>
-              <p class="mt-1 text-[12px] text-muted">Mapped to <span class="font-mono">OTP_TIMEOUT</span> at 0.94 certainty. This reason recovers 71% historically — worth chasing.</p>
+              <p class="mt-1 text-[12px] text-muted">Mapped to <span class="font-mono">OTP_TIMEOUT</span> at 0.94 certainty. This reason recovers 71% historically, worth chasing.</p>
             </div>
           </div>
           <div class="flex gap-3 p-4">
@@ -183,7 +183,7 @@ details[open] .chev{ transform:rotate(180deg); }
             <div class="min-w-0">
               <p class="text-[13px] font-semibold">Decided: UPI intent link on WhatsApp, within 90s</p>
               <p class="mt-1 border-l-2 border-agent/60 pl-2.5 text-[12px] leading-relaxed text-muted">
-                Chose WhatsApp within 90 seconds because OTP timeouts recover 71% when retried immediately — Priya is still on her phone and the intent is fresh.
+                Chose WhatsApp within 90 seconds because OTP timeouts recover 71% when retried immediately, Priya is still on her phone and the intent is fresh.
               </p>
               <div class="mt-2 flex flex-wrap gap-1.5">
                 <span class="rounded-sm bg-surface2 px-2 py-0.5 text-[11px] text-muted">Confidence 0.91</span>
@@ -201,7 +201,7 @@ details[open] .chev{ transform:rotate(180deg); }
               </div>
               <div class="wa-canvas p-3">
                 <div class="ml-auto max-w-[94%] rounded-lg wa-bubble px-3 py-2 text-[12.5px] leading-snug">
-                  Hi Priya! Your ₹1,249 order at Urban Basket didn't go through — the OTP expired. No need to start over — just tap to pay with Google Pay: rzp.io/l/ub-k4x9 ✅ Cart held for 48h.
+                  Hi Priya! Your ₹1,249 order at Urban Basket didn't go through, the OTP expired. No need to start over, just tap to pay with Google Pay: rzp.io/l/ub-k4x9 ✅ Cart held for 48h.
                   <div class="mt-1 flex items-center justify-end gap-1 text-[10px] text-[#4A7A5C]">
                     <span class="tnum">18:43</span>
                     <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="#34B7F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 11 3 3 6-7"/><path d="m8 11 3 3 6-7"/></svg>
@@ -229,10 +229,10 @@ details[open] .chev{ transform:rotate(180deg); }
     <div class="reveal max-w-[680px]">
       <p class="eyebrow text-danger">The problem</p>
       <h2 class="mt-3 text-[30px] font-bold leading-tight tracking-[-.025em] sm:text-[38px]">
-        Indian merchants lose a quarter of every checkout — and then do nothing about it.
+        Indian merchants lose a quarter of every checkout, and then do nothing about it.
       </h2>
       <p class="mt-4 text-[15.5px] leading-relaxed text-muted">
-        Roughly <span class="font-semibold text-ink">25% of Indian online payments fail</span> — OTP screens that time out, banks that go down at 9pm, UPI apps that throw errors, cards the issuer declines for no stated reason. The customer wanted to pay. The merchant wanted the money. The rails got in the way.
+        Roughly <span class="font-semibold text-ink">25% of Indian online payments fail</span>, OTP screens that time out, banks that go down at 9pm, UPI apps that throw errors, cards the issuer declines for no stated reason. The customer wanted to pay. The merchant wanted the money. The rails got in the way.
       </p>
       <p class="mt-3 text-[15.5px] leading-relaxed text-muted">
         Today that failure hits a webhook, lands in a log, and dies there. Some merchants fire a generic "complete your payment" email six hours later. Most send nothing at all. Every one of those failures is a customer who had already decided to buy.
@@ -264,7 +264,7 @@ details[open] .chev{ transform:rotate(180deg); }
 
     <div class="reveal mt-4 overflow-hidden rounded-lg border border-line">
       <div class="flex items-center gap-2 border-b border-line bg-surface2 px-4 py-2.5">
-        <span class="eyebrow text-subtle">Ten reasons a payment fails — each needs a different answer</span>
+        <span class="eyebrow text-subtle">Ten reasons a payment fails, each needs a different answer</span>
       </div>
       <div class="marquee-mask overflow-hidden bg-surface py-3.5">
         <div class="flex w-max marquee gap-2.5 px-3">
@@ -312,7 +312,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="eyebrow text-subtle">Step 01</span>
         </div>
         <h3 class="mt-3.5 text-[16px] font-semibold tracking-[-.01em]">Detect</h3>
-        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">A Razorpay <span class="font-mono text-[12px]">payment.failed</span> webhook lands. The agent holds the order open, resolves the customer, and starts a recovery within 240 ms. Abandoned carts are caught the same way.</p>
+        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">A payment gateway <span class="font-mono text-[12px]">payment.failed</span> webhook lands. The agent holds the order open, resolves the customer, and starts a recovery within 240 ms. Abandoned carts are caught the same way.</p>
       </li>
       <li class="reveal card p-5 shadow-raised">
         <div class="flex items-center gap-2.5">
@@ -322,7 +322,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="eyebrow text-subtle">Step 02</span>
         </div>
         <h3 class="mt-3.5 text-[16px] font-semibold tracking-[-.01em]">Diagnose</h3>
-        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">The raw gateway error is classified into one of ten human reasons — OTP timeout, bank downtime, insufficient funds — with a certainty score. A card decline and a dropped network are not the same problem.</p>
+        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">The raw gateway error is classified into one of ten human reasons, OTP timeout, bank downtime, insufficient funds, with a certainty score. A card decline and a dropped network are not the same problem.</p>
       </li>
       <li class="reveal card p-5 shadow-raised">
         <div class="flex items-center gap-2.5">
@@ -332,7 +332,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="eyebrow text-subtle">Step 03</span>
         </div>
         <h3 class="mt-3.5 text-[16px] font-semibold tracking-[-.01em]">Decide</h3>
-        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">Strategy, channel, timing and message, chosen per failure — with a confidence score and a sentence of reasoning you can read. Insufficient funds waits for salary day. An OTP timeout gets 90 seconds.</p>
+        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">Strategy, channel, timing and message, chosen per failure, with a confidence score and a sentence of reasoning you can read. Insufficient funds waits for salary day. An OTP timeout gets 90 seconds.</p>
       </li>
       <li class="reveal card p-5 shadow-raised">
         <div class="flex items-center gap-2.5">
@@ -342,7 +342,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="eyebrow text-subtle">Step 04</span>
         </div>
         <h3 class="mt-3.5 text-[16px] font-semibold tracking-[-.01em]">Act</h3>
-        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">It creates a real Razorpay Payment Link with the cart attached, sends the personalised nudge on WhatsApp, SMS or email, and schedules a smart retry — all inside your guardrails.</p>
+        <p class="mt-1.5 text-[13.5px] leading-relaxed text-muted">It creates a real payment link with the cart attached, sends the personalised nudge on WhatsApp, SMS or email, and schedules a smart retry, all inside your guardrails.</p>
       </li>
     </ol>
 
@@ -357,7 +357,7 @@ details[open] .chev{ transform:rotate(180deg); }
           </div>
           <h3 class="mt-3.5 text-[20px] font-semibold tracking-[-.015em]">Learn</h3>
           <p class="mt-2 text-[14px] leading-relaxed text-muted">
-            Every outcome is scored against the reason, channel and timing that produced it. The agent keeps a live recovery-rate matrix and rewrites its own playbook — so week four is materially better than week one, without anyone touching a rule.
+            Every outcome is scored against the reason, channel and timing that produced it. The agent keeps a live recovery-rate matrix and rewrites its own playbook, so week four is materially better than week one, without anyone touching a rule.
           </p>
           <a href="dashboard.html#learning" class="mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-rzp hover:text-rzp-bright">
             See the learning matrix
@@ -374,7 +374,7 @@ details[open] .chev{ transform:rotate(180deg); }
             <p class="mt-1 font-mono text-[11px] text-subtle">n = 964 · confidence 0.91 · adopted 28 Jan</p>
           </div>
           <div class="rounded-md border border-line bg-surface2 p-3.5">
-            <p class="text-[13px] font-semibold">A third nudge loses more customers than it recovers — capped at two</p>
+            <p class="text-[13px] font-semibold">A third nudge loses more customers than it recovers, capped at two</p>
             <p class="mt-1 font-mono text-[11px] text-subtle">n = 2,204 · confidence 0.96 · adopted 19 Jan</p>
           </div>
         </div>
@@ -389,10 +389,10 @@ details[open] .chev{ transform:rotate(180deg); }
   <div class="relative z-10 mx-auto max-w-[1180px] px-5 py-16 text-center lg:py-20">
     <p class="eyebrow text-rzp-soft">The demo run</p>
     <p class="mx-auto mt-4 max-w-[880px] text-[32px] font-bold leading-[1.15] tracking-[-.025em] text-white sm:text-[44px]">
-      <span class="grad-text">34% of failed payments recovered</span> in the demo run — ₹8.4L on 1,000 transactions.
+      <span class="grad-text">34% of failed payments recovered</span> in the demo run, ₹8.4L on 1,000 transactions.
     </p>
     <p class="mx-auto mt-4 max-w-[620px] text-[15px] leading-relaxed text-rzp-soft/85">
-      1,000 simulated Razorpay transactions, 247 failures across all ten reasons, no human in the loop. The agent recovered 84 of them and explained every decision it made.
+      1,000 simulated payment gateway transactions, 247 failures across all ten reasons, no human in the loop. The agent recovered 84 of them and explained every decision it made.
     </p>
     <div class="mx-auto mt-9 grid max-w-[820px] grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 sm:grid-cols-4">
       <div class="bg-navy-deep/90 px-4 py-5"><p class="text-[26px] font-bold tnum text-white">247</p><p class="mt-1 text-[12px] text-rzp-soft/80">payments failed</p></div>
@@ -421,14 +421,14 @@ details[open] .chev{ transform:rotate(180deg); }
       <div class="flex min-w-[900px] items-stretch gap-2">
         <div class="flex-1 rounded-lg border border-line bg-surface p-4">
           <p class="eyebrow text-subtle">Source</p>
-          <p class="mt-2 text-[14px] font-semibold">Razorpay Checkout</p>
+          <p class="mt-2 text-[14px] font-semibold">payment gateway Checkout</p>
           <p class="mt-1 text-[12px] leading-snug text-muted">Payment attempt fails, or the cart is abandoned.</p>
         </div>
         <div class="grid w-7 shrink-0 place-items-center text-subtle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
         <div class="flex-1 rounded-lg border border-line bg-surface p-4">
           <p class="eyebrow text-subtle">Ingest</p>
           <p class="mt-2 text-[14px] font-semibold">Webhook handler</p>
-          <p class="mt-1 font-mono text-[11.5px] text-muted">POST /api/webhooks/razorpay</p>
+          <p class="mt-1 font-mono text-[11.5px] text-muted">Signed payment gateway webhook endpoint</p>
           <p class="mt-1 text-[12px] leading-snug text-muted">Signature verified, event persisted, idempotency key set.</p>
         </div>
         <div class="grid w-7 shrink-0 place-items-center text-subtle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
@@ -445,7 +445,7 @@ details[open] .chev{ transform:rotate(180deg); }
         <div class="flex-1 rounded-lg border border-line bg-surface p-4">
           <p class="eyebrow text-subtle">Act</p>
           <p class="mt-2 text-[14px] font-semibold">Payment Links + nudge</p>
-          <p class="mt-1 text-[12px] leading-snug text-muted">Link created via Razorpay API, message sent on WhatsApp / SMS / email.</p>
+          <p class="mt-1 text-[12px] leading-snug text-muted">Link created via payment gateway API, message sent on WhatsApp / SMS / email.</p>
         </div>
         <div class="grid w-7 shrink-0 place-items-center text-subtle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
         <div class="flex-1 rounded-lg border border-success/40 bg-success/[.07] p-4">
@@ -455,16 +455,16 @@ details[open] .chev{ transform:rotate(180deg); }
         </div>
       </div>
     </div>
-    <p class="reveal mt-4 text-[12.5px] text-subtle">Next.js App Router · server actions and an SSE stream for the live feed · Postgres for events, decisions and outcomes · Razorpay Node SDK.</p>
+    <p class="reveal mt-4 text-[12.5px] text-subtle">Next.js App Router · server actions and an SSE stream for the live feed · Postgres for events, decisions and outcomes · payment gateway Node SDK.</p>
   </div>
 </section>
 
-<!-- ═══ BUILT ON RAZORPAY ═══ -->
+<!-- ═══ BUILT ON THE PAYMENT GATEWAY ═══ -->
 <section id="stack" class="border-b border-line bg-surface/40">
   <div class="mx-auto max-w-[1180px] px-5 py-16 lg:py-20">
     <div class="reveal max-w-[620px]">
-      <p class="eyebrow text-rzp">Built on Razorpay</p>
-      <h2 class="mt-3 text-[30px] font-bold leading-tight tracking-[-.025em] sm:text-[36px]">Nothing bolted on. Four Razorpay APIs, used the way they were meant to be.</h2>
+      <p class="eyebrow text-rzp">Built on the payment gateway</p>
+      <h2 class="mt-3 text-[30px] font-bold leading-tight tracking-[-.025em] sm:text-[36px]">Nothing bolted on. Four payment gateway APIs, used the way they were meant to be.</h2>
     </div>
     <div class="mt-9 grid grid-cols-1 gap-4 md:grid-cols-2">
       <div class="reveal card p-5 shadow-raised">
@@ -488,7 +488,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="grid h-8 w-8 place-items-center rounded-md bg-violet/15 text-violet"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.6"/></svg></span>
           <h3 class="text-[15px] font-semibold">Webhooks</h3>
         </div>
-        <p class="mt-3 text-[13.5px] leading-relaxed text-muted">The whole loop is webhook-driven, signature-verified and idempotent — detection on the way in, outcome scoring on the way back.</p>
+        <p class="mt-3 text-[13.5px] leading-relaxed text-muted">The whole loop is webhook-driven, signature-verified and idempotent, detection on the way in, outcome scoring on the way back.</p>
         <p class="mt-2.5 font-mono text-[11.5px] text-subtle">payment.failed · payment.captured · payment_link.paid · order.paid</p>
       </div>
       <div class="reveal card p-5 shadow-raised">
@@ -496,7 +496,7 @@ details[open] .chev{ transform:rotate(180deg); }
           <span class="grid h-8 w-8 place-items-center rounded-md bg-warning-soft text-warning"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 3v6h-6"/></svg></span>
           <h3 class="text-[15px] font-semibold">Subscriptions API</h3>
         </div>
-        <p class="mt-3 text-[13.5px] leading-relaxed text-muted">Failed mandates get the same treatment as one-off payments — the agent runs dunning on <span class="font-mono text-[12px]">subscription.charged</span> failures instead of letting churn happen silently.</p>
+        <p class="mt-3 text-[13.5px] leading-relaxed text-muted">Failed mandates get the same treatment as one-off payments, the agent runs dunning on <span class="font-mono text-[12px]">subscription.charged</span> failures instead of letting churn happen silently.</p>
         <p class="mt-2.5 font-mono text-[11.5px] text-subtle">GET /v1/subscriptions/:id · subscription.pending</p>
       </div>
     </div>
@@ -516,7 +516,7 @@ details[open] .chev{ transform:rotate(180deg); }
           Will this spam my customers?
           <svg class="chev ml-auto shrink-0 text-subtle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
         </summary>
-        <p class="pb-5 text-[14px] leading-relaxed text-muted">No — the guardrails exist for exactly this. Two nudges per customer per 24 hours, hard quiet hours, no chasing anything under ₹99, and an automatic stop after a deliberate cancel. The agent's own learning shows a third nudge loses more customers than it recovers, so it will not send one.</p>
+        <p class="pb-5 text-[14px] leading-relaxed text-muted">No, the guardrails exist for exactly this. Two nudges per customer per 24 hours, hard quiet hours, no chasing anything under ₹99, and an automatic stop after a deliberate cancel. The agent's own learning shows a third nudge loses more customers than it recovers, so it will not send one.</p>
       </details>
       <details class="group">
         <summary class="flex cursor-pointer list-none items-center gap-4 py-4 text-[15px] font-semibold">
@@ -530,7 +530,7 @@ details[open] .chev{ transform:rotate(180deg); }
           How is this different from an abandoned-cart email tool?
           <svg class="chev ml-auto shrink-0 text-subtle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
         </summary>
-        <p class="pb-5 text-[14px] leading-relaxed text-muted">A cart tool sends one template on one schedule to everyone. This agent reads <em class="not-italic font-medium text-ink">why</em> the payment failed and picks a different play for each reason — hold and wait for a bank outage, 90 seconds for an OTP timeout, salary day for insufficient funds, offer UPI after an issuer decline. Then it scores what worked and changes its own behaviour.</p>
+        <p class="pb-5 text-[14px] leading-relaxed text-muted">A cart tool sends one template on one schedule to everyone. This agent reads <em class="not-italic font-medium text-ink">why</em> the payment failed and picks a different play for each reason, hold and wait for a bank outage, 90 seconds for an OTP timeout, salary day for insufficient funds, offer UPI after an issuer decline. Then it scores what worked and changes its own behaviour.</p>
       </details>
       <details class="group">
         <summary class="flex cursor-pointer list-none items-center gap-4 py-4 text-[15px] font-semibold">
@@ -544,7 +544,7 @@ details[open] .chev{ transform:rotate(180deg); }
           What does it cost me if a recovery fails?
           <svg class="chev ml-auto shrink-0 text-subtle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
         </summary>
-        <p class="pb-5 text-[14px] leading-relaxed text-muted">One message and an expired link. The order was already lost — the agent's downside is a single WhatsApp template, and it deliberately skips reasons where chasing is not worth it, like repeated deliberate cancels.</p>
+        <p class="pb-5 text-[14px] leading-relaxed text-muted">One message and an expired link. The order was already lost, the agent's downside is a single WhatsApp template, and it deliberately skips reasons where chasing is not worth it, like repeated deliberate cancels.</p>
       </details>
       <details class="group">
         <summary class="flex cursor-pointer list-none items-center gap-4 py-4 text-[15px] font-semibold">
@@ -568,7 +568,7 @@ details[open] .chev{ transform:rotate(180deg); }
           </span>
           <span class="text-[14px] font-semibold">Recovery Agent</span>
         </div>
-        <p class="mt-3 max-w-[340px] text-[13px] leading-relaxed text-muted">An autonomous AI agent for Razorpay merchants that turns failed payments back into revenue. Built for the Razorpay AI Builder Internship 2026, Track 3: AI Revenue Recovery.</p>
+        <p class="mt-3 max-w-[340px] text-[13px] leading-relaxed text-muted">An autonomous AI agent for payment gateway merchants that turns failed payments back into revenue. Built for a payments AI buildathon, Track 3: AI Revenue Recovery.</p>
       </div>
       <div>
         <p class="eyebrow text-subtle">Product</p>
@@ -582,16 +582,16 @@ details[open] .chev{ transform:rotate(180deg); }
       <div>
         <p class="eyebrow text-subtle">Built with</p>
         <ul class="mt-3 space-y-2 text-[13px] text-muted">
-          <li>Razorpay Payments API</li>
-          <li>Razorpay Payment Links</li>
-          <li>Razorpay Webhooks</li>
-          <li>Razorpay Subscriptions</li>
+          <li>payment gateway Payments API</li>
+          <li>payment links</li>
+          <li>payment gateway Webhooks</li>
+          <li>payment gateway Subscriptions</li>
         </ul>
       </div>
     </div>
     <div class="mt-10 flex flex-wrap items-center gap-3 border-t border-line pt-6">
-      <p class="text-[12.5px] text-subtle">Demo build. Test-mode keys only — no real money moves.</p>
-      <p class="ml-auto text-[12.5px] text-subtle">Razorpay AI Builder Internship 2026 · Track 3</p>
+      <p class="text-[12.5px] text-subtle">Demo build. Test-mode keys only, no real money moves.</p>
+      <p class="ml-auto text-[12.5px] text-subtle">A payments AI buildathon · Track 3</p>
     </div>
   </div>
 </footer>
