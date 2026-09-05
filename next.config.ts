@@ -1,3 +1,7 @@
 import type { NextConfig } from "next";
-const nextConfig: NextConfig = { outputFileTracingRoot: process.cwd(), distDir: process.env.NEXT_DIST_DIR || ".next" };
+const nextConfig: NextConfig = {
+  output: "standalone",
+  outputFileTracingRoot: process.cwd(),
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+};
 export default nextConfig;

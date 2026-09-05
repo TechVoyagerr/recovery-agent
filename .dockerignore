@@ -1,0 +1,11 @@
+.git
+.orchestration
+node_modules
+.next
+.next-dev
+.env*
+*.db
+*.db-*
+*.log
+coverage
+docs/screenshots

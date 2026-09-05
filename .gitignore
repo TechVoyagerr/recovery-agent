@@ -51,3 +51,10 @@ prisma/*.db-*
 # Local orchestration transcripts and verification logs
 .orchestration/*.log
 *.log
+
+# Ephemeral deployment and local coordination
+.orchestration/
+*.db
+*.db-journal
+.next
+phase2-*.log

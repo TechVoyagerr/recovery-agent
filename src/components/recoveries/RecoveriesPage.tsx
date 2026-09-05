@@ -12,7 +12,6 @@ import {
   dateTime,
   methodLabel,
   money,
-  outcomeTone,
   reasonLabel,
   relative,
   statusLabel,

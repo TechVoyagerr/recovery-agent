@@ -24,7 +24,7 @@ export function api(handler: () => Promise<Response>): Promise<Response> {
   });
 }
 export function demoGuard(request: Request): Response | null {
-  if (process.env.NODE_ENV !== "production") return null;
+  if (process.env.NODE_ENV !== "production" || process.env.DEMO_PUBLIC === "true") return null;
   const token = process.env.DEMO_API_TOKEN;
   if (!token)
     return Response.json(

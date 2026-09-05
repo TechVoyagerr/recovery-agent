@@ -1,5 +1,7 @@
 # Razorpay Recovery Agent
 
+Live demo: <URL added after deploy>
+
 Recover failed-payment revenue with a reason-specific, consent-aware agent that invites customers back to Razorpay hosted checkout.
 
 ## Why this wins
@@ -25,7 +27,15 @@ npm run worker
 
 Open http://localhost:3000. `setup` installs dependencies, pushes the Prisma schema and seeds 200 synthetic customers. `npm run demo` combines setup and the exact batch above. CLI simulation rebuilds only its disposable `prisma/simulation.db`, independently of dashboard data in `prisma/dev.db`. Use the dashboard simulator or `POST /api/simulate` to populate the dashboard. API simulations preserve existing data and learning; reset the demo before comparing API runs. Never run two CLI simulations together.
 
-Next development output uses `.next-dev`, production builds use `.next`. `.env.local`, databases and logs are gitignored; `.env.example` is tracked. Configure payment credentials only for intentional live use. Production mutation APIs require `Authorization: Bearer <DEMO_API_TOKEN>`.
+Next development output uses `.next-dev`, production builds use `.next`. `.env.local`, databases and logs are gitignored; `.env.example` is tracked. Configure payment credentials only for intentional live use. Production mutation APIs require `Authorization: Bearer <DEMO_API_TOKEN>` unless `DEMO_PUBLIC=true`.
+
+## Deploy to Render
+
+1. Make this repository available on GitHub, then in Render select **New > Blueprint** and connect it. Render reads [render.yaml](render.yaml) and builds the multi-stage Node.js 22 Docker image with Next standalone output.
+2. Keep the Free plan and supplied demo environment defaults. No disk or credentials are required; Render generates `DEMO_API_TOKEN`. Startup pushes the Prisma schema, seeds customers, and runs an instant 1,000-transaction seed-42 simulation into the dashboard database only when it has no transactions.
+3. Wait for `/api/stats` to pass its health check, open the assigned URL, and replace the Live demo placeholder above. Confirm the dashboard has 1,000 failures and that the feed connects. Existing transactions survive process restarts only while the local filesystem remains available.
+
+The image retains Prisma CLI and tsx dependencies for startup initialization. It binds to `0.0.0.0` on Render's `PORT`. SSE sends identity encoding, no-transform and no-buffering headers with one-second heartbeats. Blueprint fields follow the [Render reference](https://render.com/docs/blueprint-spec).
 
 ## Architecture
 
@@ -130,12 +140,23 @@ Invalid input returns 400, missing records 404, conflicting runs/reset 409. Sign
 | Optional, not live-verified | Real Razorpay link creation and OpenRouter copy polish |
 | Limitations | Single merchant, local SQLite and one long-lived server process; no distributed queue/locks, provider outbox, real messaging adapter, provider inbound signature adapter or authenticated read APIs |
 
+The Render blueprint enables `DEMO_PUBLIC=true` for the hackathon: anyone can invoke demo mutation APIs, including reset and inbound opt-out, without the generated token. Use synthetic data only and leave live provider credentials unset. Set `DEMO_PUBLIC=false` to restore the production bearer-token guard. Read APIs remain public. Signed Razorpay webhook verification is unchanged.
+
+Render Free has no persistent disk: database changes are lost on redeploy, restart or spin-down, and the next empty boot recreates the seeded demo. Free services sleep after 15 minutes idle and cold starts include initialization; see [Render Free limitations](https://render.com/docs/free). Run one instance only. The container starts Next, not the optional reminder worker; instant simulations settle their own attempts, while manually scheduled reminders need `POST /api/agent/run` or a separately operated worker.
+
 The worker polls every five seconds. Process crashes can leave stale simulation runs requiring operator reconciliation. Synthetic API outcomes share dashboard learning tables, reset before real traffic. Provider send/DB-commit crash windows need an idempotent production outbox. Opt-out stops future messages; an already-delivered link can still receive a customer-authorized payment. Unknown inbound senders produce an audit event but cannot opt out a customer record that does not yet exist.
 
 ## Tests
 
-`npm test`: **2 test files passed, 56 tests passed**. Coverage includes failure classification, reason policies, consent, timing, learning, JSON/form opt-out, dispatch refusal, original-payment non-attribution, matching-link credit, replay protection and amount mismatch. Integration tests create and remove an isolated temporary SQLite database.
+`npm test`: **3 test files passed, 58 tests passed**. Coverage includes failure classification, reason policies, consent, timing, learning, JSON/form opt-out, dispatch refusal, original-payment non-attribution, matching-link credit, replay protection, amount mismatch and production demo authorization. Integration tests create and remove an isolated temporary SQLite database.
 
-`npm run build`: passed. `npm run lint`: no errors; one unused-variable warning in the design pass's recoveries component at verification time.
+`npm run build` includes lint and TypeScript checks.
 
-Screenshots are added by the design pass. See [docs/screenshots](docs/screenshots/README.md); none are fabricated here.
+## Screenshots
+
+Captured by the design pass:
+
+- [Overview](docs/screenshots/overview.png)
+- [Agent feed](docs/screenshots/feed.png)
+- [Recoveries](docs/screenshots/recoveries.png)
+- [Insights](docs/screenshots/insights.png)

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: razorpay-recovery-agent
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/stats
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:/data/dev.db
+      - key: AGENT_LLM
+        value: off
+      - key: DEMO_API_TOKEN
+        generateValue: true
+      - key: DEMO_PUBLIC
+        value: "true"
