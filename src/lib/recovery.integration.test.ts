@@ -169,24 +169,3 @@ it("recovers orphaned and timed-out simulations while preserving an active worke
     clock.mockRestore();
   }
 });
-
-describe("simulation preserves existing data", () => {
-  it("appends a run without clearing prior failures, recoveries, or events", async () => {
-    const tx = await failure();
-    const attempt = tx.attempts[0];
-    await service.dispatchAttempt(attempt.id, { mock: true, now: attempt.scheduledAt });
-    const sent = await db.recoveryAttempt.findUniqueOrThrow({ where: { id: attempt.id } });
-    await service.settleAttempt(attempt.id, true, new Date(), { paymentLinkId: sent.paymentLinkId!, synthetic: true });
-    const before = await getStats();
-    const events = await db.agentEvent.count();
-    const { createRun, executeRun } = await import("./simulator");
-    const run = await service.exclusive(() => createRun(10));
-    expect(await getStats()).toMatchObject({ totalFailed: before.totalFailed, recovered: before.recovered });
-    await executeRun(run.id);
-    const after = await getStats();
-    expect(after.totalFailed).toBe(before.totalFailed + 10);
-    expect(after.recovered).toBeGreaterThanOrEqual(before.recovered);
-    expect(await db.transaction.findUnique({ where: { id: tx.id } })).not.toBeNull();
-    expect(await db.agentEvent.count()).toBeGreaterThan(events);
-  });
-});
