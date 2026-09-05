@@ -1,4 +1,4 @@
-# Razorpay Recovery Agent
+# Recovery Agent
 
 Live demo: <URL added after deploy>
 

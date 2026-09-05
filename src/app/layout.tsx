@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Recovery Agent · Razorpay",
-  description: "Recovering failed Razorpay payments.",
+  title: "Recovery Agent",
+  description: "Recover failed-payment revenue with a consent-aware recovery agent.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

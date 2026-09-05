@@ -95,7 +95,7 @@ function Sidebar({ pathname, mobileOpen }: { pathname: string; mobileOpen: boole
           <span className="font-normal text-muted">Agent</span>
         </span>
         <span className="mt-2 block text-[10px] font-medium uppercase tracking-[0.14em] text-subtle">
-          Razorpay
+          REVENUE RECOVERY
         </span>
       </div>
 
