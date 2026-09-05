@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { prefetchDashboard } from "@/components/lib/usePoll";
 import { usePathname } from "next/navigation";
 import { cx } from "@/components/ui/primitives";
 
@@ -47,6 +48,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  React.useEffect(() => { prefetchDashboard(); }, []);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [light, setLight] = React.useState(false);
 

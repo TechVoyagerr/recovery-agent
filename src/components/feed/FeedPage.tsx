@@ -21,6 +21,7 @@ import {
   Skeleton,
   cx,
 } from "@/components/ui/primitives";
+import { FEED_URL, readCached, writeCached, usePoll } from "@/components/lib/usePoll";
 import { DecisionCard } from "@/components/agent/DecisionCard";
 
 const MAX_EVENTS = 120;
@@ -55,78 +56,33 @@ function detailLines(detail: Record<string, unknown> | undefined): string[] {
 }
 
 export function FeedPage() {
-  const [events, setEvents] = React.useState<AgentEvent[] | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
+  const { data: events, error } = usePoll<AgentEvent[]>(FEED_URL, 5000);
   const [connected, setConnected] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [decision, setDecision] = React.useState<Transaction | null>(null);
 
   const merge = React.useCallback((incoming: AgentEvent[]) => {
-    setEvents((prev) => {
-      const seen = new Set((prev ?? []).map((e) => e.id));
-      const fresh = incoming.filter((e) => !seen.has(e.id));
-      if (!fresh.length) return prev ?? [];
-      return [...fresh, ...(prev ?? [])].slice(0, MAX_EVENTS);
-    });
+    const previous = readCached<AgentEvent[]>(FEED_URL) ?? [];
+    const seen = new Set(previous.map((event) => event.id));
+    const fresh = incoming.filter((event) => !seen.has(event.id));
+    writeCached(FEED_URL, [...fresh, ...previous].slice(0, MAX_EVENTS));
   }, []);
 
-  // Seed from the REST feed, then upgrade to SSE; fall back to polling if SSE dies.
+  // EventSource reconnects automatically; neither reconnect nor REST failure clears events.
   React.useEffect(() => {
-    let stopped = false;
-    let source: EventSource | null = null;
-    let pollId: number | null = null;
-
-    const loadOnce = async () => {
-      try {
-        const res = await fetch("/api/agent/feed?limit=50", { cache: "no-store" });
-        if (!res.ok) throw new Error(`${res.status}`);
-        const json = (await res.json()) as AgentEvent[];
-        if (stopped) return;
-        setEvents((prev) => {
-          if (!prev) return json.slice(0, MAX_EVENTS);
-          const seen = new Set(prev.map((e) => e.id));
-          const fresh = json.filter((e) => !seen.has(e.id));
-          return [...fresh, ...prev].slice(0, MAX_EVENTS);
-        });
-        setError(null);
-      } catch (e) {
-        if (!stopped) setError(e instanceof Error ? e.message : "feed unavailable");
-      }
-    };
-
-    const startPolling = () => {
-      if (pollId !== null) return;
-      pollId = window.setInterval(() => void loadOnce(), 5000);
-    };
-
-    void loadOnce().then(() => {
-      if (stopped) return;
-      try {
-        source = new EventSource("/api/agent/events");
-        source.onopen = () => setConnected(true);
-        source.onmessage = (ev) => {
-          try {
-            const parsed = JSON.parse(ev.data) as AgentEvent | AgentEvent[];
-            merge(Array.isArray(parsed) ? parsed : [parsed]);
-            setError(null);
-          } catch {
-            /* a keep-alive or non-JSON frame - ignore */
-          }
-        };
-        source.onerror = () => {
-          setConnected(false);
-          startPolling();
-        };
-      } catch {
-        startPolling();
-      }
-    });
-
-    return () => {
-      stopped = true;
-      source?.close();
-      if (pollId !== null) window.clearInterval(pollId);
-    };
+    let source: EventSource;
+    try {
+      source = new EventSource("/api/agent/events");
+      source.onopen = () => setConnected(true);
+      source.onmessage = (event) => {
+        try {
+          const parsed = JSON.parse(event.data) as AgentEvent | AgentEvent[];
+          merge(Array.isArray(parsed) ? parsed : [parsed]);
+        } catch { /* Ignore keep-alives. */ }
+      };
+      source.onerror = () => setConnected(false);
+    } catch { return; }
+    return () => source.close();
   }, [merge]);
 
   const loading = events === null;
