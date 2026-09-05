@@ -38,8 +38,7 @@ function TooltipShell({ children }: { children: React.ReactNode }) {
 
 function shortBucket(bucket: string): string {
   const d = new Date(bucket);
-  if (Number.isNaN(d.getTime())) return bucket;
-  if (d.getHours() === 0) return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  if (Number.isNaN(d.getTime())) return "—";
   return d.toLocaleTimeString("en-IN", { hour: "numeric", hour12: true });
 }
 
@@ -88,12 +87,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
               return (
                 <TooltipShell>
                   <p className="text-[11px] uppercase tracking-[0.04em] text-subtle">
-                    {new Date(p.bucket).toLocaleString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      hour: "2-digit",
-                      hour12: true,
-                    })}
+                    {shortBucket(p.bucket)}
                   </p>
                   <p className="tnum mt-1.5 text-[12.5px] text-danger">{num(p.failed)} failed</p>
                   <p className="tnum text-[12.5px] text-success">{num(p.recovered)} recovered</p>
