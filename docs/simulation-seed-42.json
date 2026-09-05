@@ -1,0 +1,1164 @@
+{
+  "seed": 42,
+  "n": 1000,
+  "processed": 1000,
+  "recovered": 331,
+  "status": "COMPLETED",
+  "error": null,
+  "synthetic": true,
+  "stats": {
+    "synthetic": true,
+    "totalSuppressed": 103,
+    "totalFailed": 1000,
+    "totalAttempted": 897,
+    "recovered": 331,
+    "recoveryRate": 0.331,
+    "revenueAtRiskPaise": 177202400,
+    "revenueRecoveredPaise": 84377900,
+    "avgRecoveryMinutes": 275.42455035246746,
+    "activeRecoveries": 0,
+    "byReason": [
+      {
+        "reason": "INSUFFICIENT_FUNDS",
+        "failed": 89,
+        "attempted": 87,
+        "suppressed": 2,
+        "recovered": 19,
+        "revenueRecoveredPaise": 4684600,
+        "rate": 0.21348314606741572
+      },
+      {
+        "reason": "BANK_DOWN",
+        "failed": 89,
+        "attempted": 87,
+        "suppressed": 2,
+        "recovered": 62,
+        "revenueRecoveredPaise": 15403100,
+        "rate": 0.6966292134831461
+      },
+      {
+        "reason": "OTP_TIMEOUT",
+        "failed": 89,
+        "attempted": 87,
+        "suppressed": 2,
+        "recovered": 49,
+        "revenueRecoveredPaise": 12516800,
+        "rate": 0.550561797752809
+      },
+      {
+        "reason": "UPI_APP_ERROR",
+        "failed": 91,
+        "attempted": 90,
+        "suppressed": 1,
+        "recovered": 43,
+        "revenueRecoveredPaise": 11697100,
+        "rate": 0.4725274725274725
+      },
+      {
+        "reason": "CARD_EXPIRED",
+        "failed": 95,
+        "attempted": 92,
+        "suppressed": 3,
+        "recovered": 27,
+        "revenueRecoveredPaise": 7090000,
+        "rate": 0.28421052631578947
+      },
+      {
+        "reason": "CARD_DECLINED",
+        "failed": 93,
+        "attempted": 91,
+        "suppressed": 2,
+        "recovered": 9,
+        "revenueRecoveredPaise": 2470600,
+        "rate": 0.0967741935483871
+      },
+      {
+        "reason": "NETWORK_DROP",
+        "failed": 101,
+        "attempted": 99,
+        "suppressed": 2,
+        "recovered": 59,
+        "revenueRecoveredPaise": 14884000,
+        "rate": 0.5841584158415841
+      },
+      {
+        "reason": "CART_ABANDONED",
+        "failed": 90,
+        "attempted": 88,
+        "suppressed": 2,
+        "recovered": 33,
+        "revenueRecoveredPaise": 7962900,
+        "rate": 0.36666666666666664
+      },
+      {
+        "reason": "LIMIT_EXCEEDED",
+        "failed": 91,
+        "attempted": 91,
+        "suppressed": 0,
+        "recovered": 16,
+        "revenueRecoveredPaise": 3991900,
+        "rate": 0.17582417582417584
+      },
+      {
+        "reason": "USER_CANCELLED",
+        "failed": 85,
+        "attempted": 0,
+        "suppressed": 85,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0,
+        "rate": 0
+      },
+      {
+        "reason": "UNKNOWN",
+        "failed": 87,
+        "attempted": 85,
+        "suppressed": 2,
+        "recovered": 14,
+        "revenueRecoveredPaise": 3676900,
+        "rate": 0.16091954022988506
+      }
+    ],
+    "byChannel": [
+      {
+        "channel": "whatsapp",
+        "attempts": 650,
+        "recovered": 281,
+        "rate": 0.4323076923076923
+      },
+      {
+        "channel": "sms",
+        "attempts": 219,
+        "recovered": 41,
+        "rate": 0.1872146118721461
+      },
+      {
+        "channel": "email",
+        "attempts": 87,
+        "recovered": 9,
+        "rate": 0.10344827586206896
+      }
+    ],
+    "timeline": [
+      {
+        "bucket": "2026-07-27T00:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T01:00:00.000Z",
+        "failed": 6,
+        "recovered": 3,
+        "revenueRecoveredPaise": 1135100
+      },
+      {
+        "bucket": "2026-07-27T02:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 858700
+      },
+      {
+        "bucket": "2026-07-27T03:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 70700
+      },
+      {
+        "bucket": "2026-07-27T04:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 101100
+      },
+      {
+        "bucket": "2026-07-27T05:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 813500
+      },
+      {
+        "bucket": "2026-07-27T06:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 296200
+      },
+      {
+        "bucket": "2026-07-27T07:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T08:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 426700
+      },
+      {
+        "bucket": "2026-07-27T09:00:00.000Z",
+        "failed": 13,
+        "recovered": 1,
+        "revenueRecoveredPaise": 14700
+      },
+      {
+        "bucket": "2026-07-27T10:00:00.000Z",
+        "failed": 7,
+        "recovered": 3,
+        "revenueRecoveredPaise": 435400
+      },
+      {
+        "bucket": "2026-07-27T11:00:00.000Z",
+        "failed": 7,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T12:00:00.000Z",
+        "failed": 4,
+        "recovered": 2,
+        "revenueRecoveredPaise": 370200
+      },
+      {
+        "bucket": "2026-07-27T13:00:00.000Z",
+        "failed": 3,
+        "recovered": 3,
+        "revenueRecoveredPaise": 888300
+      },
+      {
+        "bucket": "2026-07-27T14:00:00.000Z",
+        "failed": 10,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T15:00:00.000Z",
+        "failed": 5,
+        "recovered": 3,
+        "revenueRecoveredPaise": 176100
+      },
+      {
+        "bucket": "2026-07-27T16:00:00.000Z",
+        "failed": 5,
+        "recovered": 2,
+        "revenueRecoveredPaise": 706400
+      },
+      {
+        "bucket": "2026-07-27T17:00:00.000Z",
+        "failed": 9,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T18:00:00.000Z",
+        "failed": 5,
+        "recovered": 4,
+        "revenueRecoveredPaise": 458400
+      },
+      {
+        "bucket": "2026-07-27T19:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 252000
+      },
+      {
+        "bucket": "2026-07-27T20:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 774200
+      },
+      {
+        "bucket": "2026-07-27T21:00:00.000Z",
+        "failed": 3,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-27T22:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 498100
+      },
+      {
+        "bucket": "2026-07-27T23:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 278500
+      },
+      {
+        "bucket": "2026-07-28T00:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 461100
+      },
+      {
+        "bucket": "2026-07-28T01:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 487600
+      },
+      {
+        "bucket": "2026-07-28T02:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 272300
+      },
+      {
+        "bucket": "2026-07-28T03:00:00.000Z",
+        "failed": 7,
+        "recovered": 2,
+        "revenueRecoveredPaise": 827500
+      },
+      {
+        "bucket": "2026-07-28T04:00:00.000Z",
+        "failed": 7,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-28T05:00:00.000Z",
+        "failed": 7,
+        "recovered": 3,
+        "revenueRecoveredPaise": 833500
+      },
+      {
+        "bucket": "2026-07-28T06:00:00.000Z",
+        "failed": 2,
+        "recovered": 1,
+        "revenueRecoveredPaise": 392400
+      },
+      {
+        "bucket": "2026-07-28T07:00:00.000Z",
+        "failed": 3,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-28T08:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 198300
+      },
+      {
+        "bucket": "2026-07-28T09:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 407200
+      },
+      {
+        "bucket": "2026-07-28T10:00:00.000Z",
+        "failed": 7,
+        "recovered": 2,
+        "revenueRecoveredPaise": 323800
+      },
+      {
+        "bucket": "2026-07-28T11:00:00.000Z",
+        "failed": 8,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1216900
+      },
+      {
+        "bucket": "2026-07-28T12:00:00.000Z",
+        "failed": 6,
+        "recovered": 3,
+        "revenueRecoveredPaise": 565300
+      },
+      {
+        "bucket": "2026-07-28T13:00:00.000Z",
+        "failed": 9,
+        "recovered": 1,
+        "revenueRecoveredPaise": 485600
+      },
+      {
+        "bucket": "2026-07-28T14:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 850200
+      },
+      {
+        "bucket": "2026-07-28T15:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 93800
+      },
+      {
+        "bucket": "2026-07-28T16:00:00.000Z",
+        "failed": 10,
+        "recovered": 1,
+        "revenueRecoveredPaise": 83500
+      },
+      {
+        "bucket": "2026-07-28T17:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 150400
+      },
+      {
+        "bucket": "2026-07-28T18:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 745400
+      },
+      {
+        "bucket": "2026-07-28T19:00:00.000Z",
+        "failed": 5,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-28T20:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 242600
+      },
+      {
+        "bucket": "2026-07-28T21:00:00.000Z",
+        "failed": 6,
+        "recovered": 3,
+        "revenueRecoveredPaise": 984600
+      },
+      {
+        "bucket": "2026-07-28T22:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 510800
+      },
+      {
+        "bucket": "2026-07-28T23:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 80400
+      },
+      {
+        "bucket": "2026-07-29T00:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 573000
+      },
+      {
+        "bucket": "2026-07-29T01:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 140800
+      },
+      {
+        "bucket": "2026-07-29T02:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 143800
+      },
+      {
+        "bucket": "2026-07-29T03:00:00.000Z",
+        "failed": 5,
+        "recovered": 2,
+        "revenueRecoveredPaise": 687200
+      },
+      {
+        "bucket": "2026-07-29T04:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 192900
+      },
+      {
+        "bucket": "2026-07-29T05:00:00.000Z",
+        "failed": 5,
+        "recovered": 3,
+        "revenueRecoveredPaise": 882200
+      },
+      {
+        "bucket": "2026-07-29T06:00:00.000Z",
+        "failed": 7,
+        "recovered": 4,
+        "revenueRecoveredPaise": 689200
+      },
+      {
+        "bucket": "2026-07-29T07:00:00.000Z",
+        "failed": 10,
+        "recovered": 2,
+        "revenueRecoveredPaise": 403700
+      },
+      {
+        "bucket": "2026-07-29T08:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-29T09:00:00.000Z",
+        "failed": 3,
+        "recovered": 3,
+        "revenueRecoveredPaise": 606800
+      },
+      {
+        "bucket": "2026-07-29T10:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 210600
+      },
+      {
+        "bucket": "2026-07-29T11:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 1077100
+      },
+      {
+        "bucket": "2026-07-29T12:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 367200
+      },
+      {
+        "bucket": "2026-07-29T13:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 457700
+      },
+      {
+        "bucket": "2026-07-29T14:00:00.000Z",
+        "failed": 10,
+        "recovered": 3,
+        "revenueRecoveredPaise": 968200
+      },
+      {
+        "bucket": "2026-07-29T15:00:00.000Z",
+        "failed": 3,
+        "recovered": 3,
+        "revenueRecoveredPaise": 297800
+      },
+      {
+        "bucket": "2026-07-29T16:00:00.000Z",
+        "failed": 8,
+        "recovered": 1,
+        "revenueRecoveredPaise": 271300
+      },
+      {
+        "bucket": "2026-07-29T17:00:00.000Z",
+        "failed": 9,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1121700
+      },
+      {
+        "bucket": "2026-07-29T18:00:00.000Z",
+        "failed": 7,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1530300
+      },
+      {
+        "bucket": "2026-07-29T19:00:00.000Z",
+        "failed": 4,
+        "recovered": 1,
+        "revenueRecoveredPaise": 114000
+      },
+      {
+        "bucket": "2026-07-29T20:00:00.000Z",
+        "failed": 4,
+        "recovered": 1,
+        "revenueRecoveredPaise": 167400
+      },
+      {
+        "bucket": "2026-07-29T21:00:00.000Z",
+        "failed": 4,
+        "recovered": 2,
+        "revenueRecoveredPaise": 379800
+      },
+      {
+        "bucket": "2026-07-29T22:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 134500
+      },
+      {
+        "bucket": "2026-07-29T23:00:00.000Z",
+        "failed": 4,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-30T00:00:00.000Z",
+        "failed": 7,
+        "recovered": 3,
+        "revenueRecoveredPaise": 938000
+      },
+      {
+        "bucket": "2026-07-30T01:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 863600
+      },
+      {
+        "bucket": "2026-07-30T02:00:00.000Z",
+        "failed": 10,
+        "recovered": 1,
+        "revenueRecoveredPaise": 15800
+      },
+      {
+        "bucket": "2026-07-30T03:00:00.000Z",
+        "failed": 8,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1453500
+      },
+      {
+        "bucket": "2026-07-30T04:00:00.000Z",
+        "failed": 6,
+        "recovered": 3,
+        "revenueRecoveredPaise": 968400
+      },
+      {
+        "bucket": "2026-07-30T05:00:00.000Z",
+        "failed": 7,
+        "recovered": 2,
+        "revenueRecoveredPaise": 468000
+      },
+      {
+        "bucket": "2026-07-30T06:00:00.000Z",
+        "failed": 9,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-30T07:00:00.000Z",
+        "failed": 8,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1171500
+      },
+      {
+        "bucket": "2026-07-30T08:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 443600
+      },
+      {
+        "bucket": "2026-07-30T09:00:00.000Z",
+        "failed": 13,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1572900
+      },
+      {
+        "bucket": "2026-07-30T10:00:00.000Z",
+        "failed": 10,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1251000
+      },
+      {
+        "bucket": "2026-07-30T11:00:00.000Z",
+        "failed": 5,
+        "recovered": 2,
+        "revenueRecoveredPaise": 461200
+      },
+      {
+        "bucket": "2026-07-30T12:00:00.000Z",
+        "failed": 4,
+        "recovered": 2,
+        "revenueRecoveredPaise": 640900
+      },
+      {
+        "bucket": "2026-07-30T13:00:00.000Z",
+        "failed": 12,
+        "recovered": 1,
+        "revenueRecoveredPaise": 430700
+      },
+      {
+        "bucket": "2026-07-30T14:00:00.000Z",
+        "failed": 1,
+        "recovered": 1,
+        "revenueRecoveredPaise": 244000
+      },
+      {
+        "bucket": "2026-07-30T15:00:00.000Z",
+        "failed": 7,
+        "recovered": 2,
+        "revenueRecoveredPaise": 588500
+      },
+      {
+        "bucket": "2026-07-30T16:00:00.000Z",
+        "failed": 8,
+        "recovered": 1,
+        "revenueRecoveredPaise": 26800
+      },
+      {
+        "bucket": "2026-07-30T17:00:00.000Z",
+        "failed": 4,
+        "recovered": 3,
+        "revenueRecoveredPaise": 939600
+      },
+      {
+        "bucket": "2026-07-30T18:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 433400
+      },
+      {
+        "bucket": "2026-07-30T19:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 571600
+      },
+      {
+        "bucket": "2026-07-30T20:00:00.000Z",
+        "failed": 10,
+        "recovered": 3,
+        "revenueRecoveredPaise": 826000
+      },
+      {
+        "bucket": "2026-07-30T21:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 681000
+      },
+      {
+        "bucket": "2026-07-30T22:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 431700
+      },
+      {
+        "bucket": "2026-07-30T23:00:00.000Z",
+        "failed": 6,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1052800
+      },
+      {
+        "bucket": "2026-07-31T00:00:00.000Z",
+        "failed": 9,
+        "recovered": 3,
+        "revenueRecoveredPaise": 746900
+      },
+      {
+        "bucket": "2026-07-31T01:00:00.000Z",
+        "failed": 3,
+        "recovered": 3,
+        "revenueRecoveredPaise": 717800
+      },
+      {
+        "bucket": "2026-07-31T02:00:00.000Z",
+        "failed": 2,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T03:00:00.000Z",
+        "failed": 4,
+        "recovered": 1,
+        "revenueRecoveredPaise": 213300
+      },
+      {
+        "bucket": "2026-07-31T04:00:00.000Z",
+        "failed": 4,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T05:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 348000
+      },
+      {
+        "bucket": "2026-07-31T06:00:00.000Z",
+        "failed": 8,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T07:00:00.000Z",
+        "failed": 5,
+        "recovered": 3,
+        "revenueRecoveredPaise": 400900
+      },
+      {
+        "bucket": "2026-07-31T08:00:00.000Z",
+        "failed": 6,
+        "recovered": 2,
+        "revenueRecoveredPaise": 551200
+      },
+      {
+        "bucket": "2026-07-31T09:00:00.000Z",
+        "failed": 10,
+        "recovered": 2,
+        "revenueRecoveredPaise": 625300
+      },
+      {
+        "bucket": "2026-07-31T10:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 385600
+      },
+      {
+        "bucket": "2026-07-31T11:00:00.000Z",
+        "failed": 2,
+        "recovered": 2,
+        "revenueRecoveredPaise": 675400
+      },
+      {
+        "bucket": "2026-07-31T12:00:00.000Z",
+        "failed": 7,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T13:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 471000
+      },
+      {
+        "bucket": "2026-07-31T14:00:00.000Z",
+        "failed": 9,
+        "recovered": 2,
+        "revenueRecoveredPaise": 336000
+      },
+      {
+        "bucket": "2026-07-31T15:00:00.000Z",
+        "failed": 5,
+        "recovered": 6,
+        "revenueRecoveredPaise": 1284400
+      },
+      {
+        "bucket": "2026-07-31T16:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 167000
+      },
+      {
+        "bucket": "2026-07-31T17:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T18:00:00.000Z",
+        "failed": 4,
+        "recovered": 2,
+        "revenueRecoveredPaise": 459500
+      },
+      {
+        "bucket": "2026-07-31T19:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 420500
+      },
+      {
+        "bucket": "2026-07-31T20:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T21:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 644000
+      },
+      {
+        "bucket": "2026-07-31T22:00:00.000Z",
+        "failed": 3,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-07-31T23:00:00.000Z",
+        "failed": 6,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1264900
+      },
+      {
+        "bucket": "2026-08-01T00:00:00.000Z",
+        "failed": 12,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1335600
+      },
+      {
+        "bucket": "2026-08-01T01:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 840900
+      },
+      {
+        "bucket": "2026-08-01T02:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 197900
+      },
+      {
+        "bucket": "2026-08-01T03:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 53700
+      },
+      {
+        "bucket": "2026-08-01T04:00:00.000Z",
+        "failed": 6,
+        "recovered": 15,
+        "revenueRecoveredPaise": 3179800
+      },
+      {
+        "bucket": "2026-08-01T05:00:00.000Z",
+        "failed": 7,
+        "recovered": 4,
+        "revenueRecoveredPaise": 987500
+      },
+      {
+        "bucket": "2026-08-01T06:00:00.000Z",
+        "failed": 9,
+        "recovered": 3,
+        "revenueRecoveredPaise": 797000
+      },
+      {
+        "bucket": "2026-08-01T07:00:00.000Z",
+        "failed": 5,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1181900
+      },
+      {
+        "bucket": "2026-08-01T08:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 156700
+      },
+      {
+        "bucket": "2026-08-01T09:00:00.000Z",
+        "failed": 6,
+        "recovered": 3,
+        "revenueRecoveredPaise": 701300
+      },
+      {
+        "bucket": "2026-08-01T10:00:00.000Z",
+        "failed": 3,
+        "recovered": 1,
+        "revenueRecoveredPaise": 389800
+      },
+      {
+        "bucket": "2026-08-01T11:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 128900
+      },
+      {
+        "bucket": "2026-08-01T12:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 65600
+      },
+      {
+        "bucket": "2026-08-01T13:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 15400
+      },
+      {
+        "bucket": "2026-08-01T14:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 35400
+      },
+      {
+        "bucket": "2026-08-01T15:00:00.000Z",
+        "failed": 6,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-01T16:00:00.000Z",
+        "failed": 9,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1183100
+      },
+      {
+        "bucket": "2026-08-01T17:00:00.000Z",
+        "failed": 7,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1130900
+      },
+      {
+        "bucket": "2026-08-01T18:00:00.000Z",
+        "failed": 8,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1114500
+      },
+      {
+        "bucket": "2026-08-01T19:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 563400
+      },
+      {
+        "bucket": "2026-08-01T20:00:00.000Z",
+        "failed": 4,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-01T21:00:00.000Z",
+        "failed": 4,
+        "recovered": 1,
+        "revenueRecoveredPaise": 223600
+      },
+      {
+        "bucket": "2026-08-01T22:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 476500
+      },
+      {
+        "bucket": "2026-08-01T23:00:00.000Z",
+        "failed": 8,
+        "recovered": 1,
+        "revenueRecoveredPaise": 454000
+      },
+      {
+        "bucket": "2026-08-02T00:00:00.000Z",
+        "failed": 3,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T01:00:00.000Z",
+        "failed": 8,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T02:00:00.000Z",
+        "failed": 2,
+        "recovered": 2,
+        "revenueRecoveredPaise": 485500
+      },
+      {
+        "bucket": "2026-08-02T03:00:00.000Z",
+        "failed": 6,
+        "recovered": 1,
+        "revenueRecoveredPaise": 95200
+      },
+      {
+        "bucket": "2026-08-02T04:00:00.000Z",
+        "failed": 4,
+        "recovered": 4,
+        "revenueRecoveredPaise": 1404800
+      },
+      {
+        "bucket": "2026-08-02T05:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 731500
+      },
+      {
+        "bucket": "2026-08-02T06:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 488400
+      },
+      {
+        "bucket": "2026-08-02T07:00:00.000Z",
+        "failed": 7,
+        "recovered": 1,
+        "revenueRecoveredPaise": 81400
+      },
+      {
+        "bucket": "2026-08-02T08:00:00.000Z",
+        "failed": 13,
+        "recovered": 6,
+        "revenueRecoveredPaise": 1742600
+      },
+      {
+        "bucket": "2026-08-02T09:00:00.000Z",
+        "failed": 2,
+        "recovered": 1,
+        "revenueRecoveredPaise": 14700
+      },
+      {
+        "bucket": "2026-08-02T10:00:00.000Z",
+        "failed": 8,
+        "recovered": 2,
+        "revenueRecoveredPaise": 572000
+      },
+      {
+        "bucket": "2026-08-02T11:00:00.000Z",
+        "failed": 4,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T12:00:00.000Z",
+        "failed": 2,
+        "recovered": 2,
+        "revenueRecoveredPaise": 122500
+      },
+      {
+        "bucket": "2026-08-02T13:00:00.000Z",
+        "failed": 1,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T14:00:00.000Z",
+        "failed": 5,
+        "recovered": 2,
+        "revenueRecoveredPaise": 724300
+      },
+      {
+        "bucket": "2026-08-02T15:00:00.000Z",
+        "failed": 8,
+        "recovered": 3,
+        "revenueRecoveredPaise": 853200
+      },
+      {
+        "bucket": "2026-08-02T16:00:00.000Z",
+        "failed": 5,
+        "recovered": 3,
+        "revenueRecoveredPaise": 1243500
+      },
+      {
+        "bucket": "2026-08-02T17:00:00.000Z",
+        "failed": 4,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T18:00:00.000Z",
+        "failed": 5,
+        "recovered": 0,
+        "revenueRecoveredPaise": 0
+      },
+      {
+        "bucket": "2026-08-02T19:00:00.000Z",
+        "failed": 11,
+        "recovered": 3,
+        "revenueRecoveredPaise": 776200
+      },
+      {
+        "bucket": "2026-08-02T20:00:00.000Z",
+        "failed": 6,
+        "recovered": 5,
+        "revenueRecoveredPaise": 1305200
+      },
+      {
+        "bucket": "2026-08-02T21:00:00.000Z",
+        "failed": 3,
+        "recovered": 2,
+        "revenueRecoveredPaise": 413200
+      },
+      {
+        "bucket": "2026-08-02T22:00:00.000Z",
+        "failed": 5,
+        "recovered": 1,
+        "revenueRecoveredPaise": 58600
+      },
+      {
+        "bucket": "2026-08-02T23:00:00.000Z",
+        "failed": 9,
+        "recovered": 3,
+        "revenueRecoveredPaise": 992100
+      },
+      {
+        "bucket": "2026-08-03T00:00:00.000Z",
+        "failed": 0,
+        "recovered": 2,
+        "revenueRecoveredPaise": 504700
+      },
+      {
+        "bucket": "2026-08-03T17:00:00.000Z",
+        "failed": 0,
+        "recovered": 1,
+        "revenueRecoveredPaise": 184000
+      }
+    ]
+  }
+}

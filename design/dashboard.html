@@ -1,0 +1,1513 @@
+<!doctype html>
+<html lang="en" class="">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recovery Agent · Razorpay Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg:'rgb(var(--bg) / <alpha-value>)', surface:'rgb(var(--surface) / <alpha-value>)',
+        surface2:'rgb(var(--surface-2) / <alpha-value>)', surface3:'rgb(var(--surface-3) / <alpha-value>)',
+        line:'rgb(var(--border) / <alpha-value>)', lineStrong:'rgb(var(--border-strong) / <alpha-value>)',
+        ink:'rgb(var(--text) / <alpha-value>)', muted:'rgb(var(--text-muted) / <alpha-value>)',
+        subtle:'rgb(var(--text-subtle) / <alpha-value>)',
+        navy:{DEFAULT:'#0C2451',deep:'#081A3B'},
+        rzp:{DEFAULT:'#2B84EA',bright:'#528FF0',soft:'#8FBEF7'},
+        agent:'#25C2D9',
+        success:{DEFAULT:'#12B76A',soft:'rgb(var(--success-soft) / <alpha-value>)'},
+        warning:{DEFAULT:'#F79009',soft:'rgb(var(--warning-soft) / <alpha-value>)'},
+        danger:{DEFAULT:'#F04438',soft:'rgb(var(--danger-soft) / <alpha-value>)'},
+        info:'#528FF0', violet:'#8B7BF7',
+      },
+      fontFamily:{ sans:['Inter','ui-sans-serif','system-ui','sans-serif'], mono:['ui-monospace','SF Mono','Menlo','monospace'] },
+      borderRadius:{ sm:'6px', md:'10px', lg:'14px', xl:'20px' },
+      boxShadow:{
+        raised:'inset 0 1px 0 rgb(255 255 255 / .04), 0 1px 2px rgb(0 0 0 / .28)',
+        overlay:'0 16px 48px rgb(0 0 0 / .45)',
+        modal:'0 32px 80px rgb(0 0 0 / .55)',
+        glow:'0 0 0 4px rgb(43 132 234 / .12)',
+      },
+      transitionTimingFunction:{ out:'cubic-bezier(.16,1,.3,1)' },
+      keyframes:{
+        feedIn:{ from:{opacity:0, transform:'translateY(-10px)'}, to:{opacity:1, transform:'none'} },
+        breathe:{ '0%,100%':{boxShadow:'0 0 0 0 rgb(37 194 217 / .40)'}, '50%':{boxShadow:'0 0 0 9px rgb(37 194 217 / 0)'} },
+        riseIn:{ from:{opacity:0, transform:'translateY(6px)'}, to:{opacity:1, transform:'none'} },
+      },
+      animation:{ feedIn:'feedIn .3s cubic-bezier(.16,1,.3,1) both', breathe:'breathe 1.6s ease-in-out infinite', riseIn:'riseIn .32s cubic-bezier(.16,1,.3,1) both' },
+    }
+  }
+}
+</script>
+<style>
+:root{
+  --bg:7 13 27; --surface:13 21 38; --surface-2:19 30 51; --surface-3:26 39 64;
+  --border:30 44 72; --border-strong:44 61 94;
+  --text:232 238 249; --text-muted:147 163 190; --text-subtle:100 116 139;
+  --success-soft:11 74 46; --warning-soft:74 50 11; --danger-soft:76 26 23;
+  --grid:255 255 255;
+  color-scheme: dark;
+}
+html.light{
+  --bg:245 247 251; --surface:255 255 255; --surface-2:240 244 250; --surface-3:231 237 247;
+  --border:226 232 242; --border-strong:203 213 230;
+  --text:12 36 81; --text-muted:82 96 122; --text-subtle:132 147 172;
+  --success-soft:214 245 228; --warning-soft:253 240 213; --danger-soft:253 227 225;
+  --grid:12 36 81;
+  color-scheme: light;
+}
+html,body{ background:rgb(var(--bg)); color:rgb(var(--text)); }
+body{ font-family:Inter,ui-sans-serif,system-ui,sans-serif; font-feature-settings:'cv05' 1,'ss01' 1; -webkit-font-smoothing:antialiased; margin:0; }
+.tnum{ font-variant-numeric: tabular-nums; }
+.eyebrow{ font-size:11px; line-height:1.2; letter-spacing:.09em; font-weight:600; text-transform:uppercase; }
+*:focus-visible{ outline:none; box-shadow:0 0 0 2px rgb(var(--bg)), 0 0 0 4px #2B84EA; border-radius:8px; }
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-thumb{ background:rgb(var(--border-strong)); border-radius:99px; border:3px solid rgb(var(--bg)); }
+::-webkit-scrollbar-track{ background:transparent; }
+.scroll-thin::-webkit-scrollbar{ width:6px; }
+.scroll-thin::-webkit-scrollbar-thumb{ border:0; background:rgb(var(--border-strong)); }
+.card{ background:rgb(var(--surface)); border:1px solid rgb(var(--border)); border-radius:14px; }
+.hairline{ border-color:rgb(var(--border)); }
+.money-band{ background-image:linear-gradient(110deg,#081A3B 0%,#0C2451 44%,#16386F 100%); }
+.grad-agent{ background-image:linear-gradient(135deg,#2B84EA 0%,#25C2D9 100%); }
+.grad-text{ background:linear-gradient(135deg,#528FF0,#25C2D9); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.wa-bubble{ background:#DCF8C6; color:#0B2415; }
+html.light .wa-bubble{ background:#DCF8C6; color:#0B2415; }
+.wa-tail::after{ content:''; position:absolute; right:-6px; top:10px; width:0;height:0; border-left:8px solid #DCF8C6; border-top:6px solid transparent; border-bottom:6px solid transparent; }
+.wa-canvas{ background-color:#0B141A; background-image:radial-gradient(rgb(255 255 255 / .045) 1px, transparent 1px); background-size:16px 16px; }
+html.light .wa-canvas{ background-color:#ECE5DD; background-image:radial-gradient(rgb(12 36 81 / .05) 1px, transparent 1px); }
+.tl-line{ position:absolute; left:15px; top:26px; bottom:-14px; width:2px; background:rgb(var(--border-strong)); }
+.dot-live{ box-shadow:0 0 0 0 rgb(18 183 106 / .5); animation:pulseLive 2s infinite; }
+@keyframes pulseLive{ 70%{ box-shadow:0 0 0 7px rgb(18 183 106 / 0);} 100%{ box-shadow:0 0 0 0 rgb(18 183 106 / 0);} }
+.row-enter{ animation:feedIn .3s cubic-bezier(.16,1,.3,1) both; }
+@keyframes feedIn{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+input[type=range]{ -webkit-appearance:none; appearance:none; height:4px; border-radius:99px; background:rgb(var(--surface-3)); }
+input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px;height:18px;border-radius:99px;background:#2B84EA; border:3px solid rgb(var(--surface)); box-shadow:0 1px 4px rgb(0 0 0 / .4); cursor:pointer; }
+@media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+[hidden]{ display:none !important; }
+</style>
+</head>
+<body class="bg-bg text-ink">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-3 focus:rounded-md focus:bg-rzp focus:px-4 focus:py-2 focus:text-white focus:text-sm">Skip to content</a>
+
+<div class="flex min-h-screen">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-[248px] shrink-0 -translate-x-full border-r border-line bg-surface transition-transform duration-300 ease-out lg:static lg:translate-x-0">
+    <div class="flex h-full flex-col">
+      <div class="flex h-16 items-center gap-2.5 px-5">
+        <div class="grid h-8 w-8 place-items-center rounded-md grad-agent shadow-glow">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 3v6h-6"/></svg>
+        </div>
+        <div class="leading-tight">
+          <div class="text-[14px] font-semibold tracking-[-.01em]">Recovery Agent</div>
+          <div class="text-[10.5px] text-subtle">by Razorpay</div>
+        </div>
+        <button id="closeSidebar" class="ml-auto rounded-md p-1.5 text-muted hover:bg-surface2 hover:text-ink lg:hidden" aria-label="Close navigation">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <nav class="mt-1 flex-1 space-y-0.5 overflow-y-auto px-3 scroll-thin" aria-label="Main">
+        <p class="eyebrow px-2 pb-2 pt-3 text-subtle">Agent</p>
+        <button class="navbtn" data-view="overview" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <span>Overview</span>
+        </button>
+        <button class="navbtn" data-view="feed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.6"/></svg>
+          <span>Live Agent Feed</span>
+          <span id="feedBadge" class="ml-auto rounded-full bg-agent/15 px-1.5 py-0.5 text-[10px] font-semibold text-agent tnum">3</span>
+        </button>
+        <button class="navbtn" data-view="recoveries">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>
+          <span>Recoveries</span>
+        </button>
+        <button class="navbtn" data-view="learning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M5 10.5V16c0 1.7 3.1 3 7 3s7-1.3 7-3v-5.5"/></svg>
+          <span>Learning</span>
+        </button>
+        <p class="eyebrow px-2 pb-2 pt-5 text-subtle">Workspace</p>
+        <button class="navbtn" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.5 19.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3 15.4H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 8.5l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 4.6V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="m-3 rounded-lg border border-line bg-surface2 p-3">
+        <div class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-success dot-live"></span>
+          <span class="text-[12px] font-semibold">Agent running</span>
+          <span class="ml-auto rounded-sm bg-surface3 px-1.5 py-0.5 font-mono text-[10px] text-muted">v1.4</span>
+        </div>
+        <p class="mt-1.5 text-[11.5px] leading-snug text-muted">Fully autonomous · 3 channels live<br>Last decision <span id="lastDecisionAgo" class="tnum">4s</span> ago</p>
+      </div>
+    </div>
+  </aside>
+  <div id="scrim" class="fixed inset-0 z-30 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <div class="flex min-w-0 flex-1 flex-col">
+
+    <header class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-bg/85 px-4 backdrop-blur-xl sm:px-6">
+      <button id="openSidebar" class="rounded-md p-2 text-muted hover:bg-surface2 hover:text-ink lg:hidden" aria-label="Open navigation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+
+      <div class="hidden items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-1.5 sm:flex">
+        <div class="grid h-5 w-5 place-items-center rounded-[5px] bg-navy text-[10px] font-bold text-white">UB</div>
+        <span class="text-[13px] font-medium">Urban Basket</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" class="text-subtle"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <span class="hidden rounded-full border border-warning/30 bg-warning-soft px-2 py-0.5 text-[11px] font-semibold text-warning md:inline-block">Test mode</span>
+
+      <div class="ml-auto flex items-center gap-2">
+        <div class="hidden items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 sm:flex">
+          <span class="h-1.5 w-1.5 rounded-full bg-success dot-live"></span>
+          <span class="text-[12px] font-medium text-muted">Live · <span id="webhookCount" class="tnum text-ink">1,284</span> webhooks today</span>
+        </div>
+        <button id="triggerBtnTop" class="inline-flex items-center gap-1.5 rounded-md bg-rzp px-3 py-2 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-rzp-bright">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>
+          <span class="hidden sm:inline">Trigger a failure</span>
+        </button>
+        <button id="themeBtn" class="rounded-md border border-line bg-surface p-2 text-muted transition-colors duration-150 hover:text-ink" aria-label="Toggle colour theme">
+          <svg id="iconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg id="iconSun" hidden width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <div class="grid h-8 w-8 place-items-center rounded-full bg-surface3 text-[11px] font-semibold text-muted" title="Nandini Rao">NR</div>
+      </div>
+    </header>
+
+    <main id="main" class="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <div class="mx-auto w-full max-w-[1440px]">
+
+        <!-- ─────────── OVERVIEW ─────────── -->
+        <section data-panel="overview">
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h1 class="text-[26px] font-semibold tracking-[-.02em]">Overview</h1>
+              <p class="mt-0.5 text-[13.5px] text-muted">What the agent recovered while you were doing something else.</p>
+            </div>
+            <div class="flex items-center gap-1 rounded-md border border-line bg-surface p-0.5" role="group" aria-label="Date range">
+              <button class="seg seg-on" data-range="24h">24h</button>
+              <button class="seg" data-range="7d">7 days</button>
+              <button class="seg" data-range="30d">30 days</button>
+            </div>
+          </div>
+
+          <!-- KPI row -->
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div class="card p-5 shadow-raised">
+              <p class="eyebrow text-subtle">Revenue recovered</p>
+              <p class="mt-2 text-[32px] font-bold leading-none tracking-[-.02em] tnum text-success" data-count="842150" data-prefix="₹"></p>
+              <p class="mt-2.5 flex items-center gap-1.5 text-[12px] text-muted"><span class="inline-flex items-center gap-0.5 rounded-sm bg-success-soft px-1.5 py-0.5 font-semibold text-success">+18.4%</span> vs yesterday</p>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <p class="eyebrow text-subtle">Recovery rate</p>
+              <p class="mt-2 text-[32px] font-bold leading-none tracking-[-.02em] tnum" data-count="34.2" data-suffix="%" data-dec="1"></p>
+              <div class="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface3"><div class="h-full rounded-full bg-rzp transition-[width] duration-700 ease-out" style="width:34.2%"></div></div>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <p class="eyebrow text-subtle">Revenue at risk</p>
+              <p class="mt-2 text-[32px] font-bold leading-none tracking-[-.02em] tnum text-warning" data-count="1618400" data-prefix="₹"></p>
+              <p class="mt-2.5 text-[12px] text-muted"><span class="tnum">312</span> payments in the recovery queue</p>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <p class="eyebrow text-subtle">Avg time to recover</p>
+              <p class="mt-2 text-[32px] font-bold leading-none tracking-[-.02em] tnum" data-count="8" data-suffix="m 41s"></p>
+              <p class="mt-2.5 flex items-center gap-1.5 text-[12px] text-muted"><span class="inline-flex items-center gap-0.5 rounded-sm bg-success-soft px-1.5 py-0.5 font-semibold text-success">−2m 12s</span> faster this week</p>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <p class="eyebrow text-subtle">Active recoveries</p>
+              <p class="mt-2 text-[32px] font-bold leading-none tracking-[-.02em] tnum text-rzp" data-count="47"></p>
+              <div class="mt-2.5 flex -space-x-1.5" aria-hidden="true">
+                <span class="h-5 w-5 rounded-full border-2 border-surface bg-rzp/70"></span>
+                <span class="h-5 w-5 rounded-full border-2 border-surface bg-agent/70"></span>
+                <span class="h-5 w-5 rounded-full border-2 border-surface bg-violet/70"></span>
+                <span class="grid h-5 w-5 place-items-center rounded-full border-2 border-surface bg-surface3 text-[9px] font-semibold text-muted">44</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Money left on table -->
+          <div class="money-band mt-4 overflow-hidden rounded-lg border border-navy/50 p-5 shadow-raised sm:p-6">
+            <div class="flex flex-wrap items-center gap-6">
+              <div class="min-w-0">
+                <p class="eyebrow flex items-center gap-2 text-rzp-soft">
+                  <span class="h-1.5 w-1.5 rounded-full bg-danger dot-live"></span> Money left on the table — right now
+                </p>
+                <p id="moneyCounter" class="mt-2 text-[38px] font-bold leading-none tracking-[-.025em] tnum text-white sm:text-[46px]">₹0</p>
+                <p class="mt-2 text-[13px] text-rzp-soft/80">Failed payments across Indian merchants since you opened this page. India's average checkout failure rate is <span class="font-semibold text-white">~25%</span>.</p>
+              </div>
+              <div class="ml-auto flex items-center gap-6">
+                <div>
+                  <p class="text-[11px] font-medium uppercase tracking-wider text-rzp-soft/70">Agent recovered</p>
+                  <p id="moneySaved" class="mt-1 text-[22px] font-bold tnum text-success">₹0</p>
+                </div>
+                <button class="rounded-md border border-white/15 bg-white/10 px-3.5 py-2 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-white/20" onclick="go('feed')">Watch it work →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+            <div class="card p-5 shadow-raised xl:col-span-2">
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h2 class="text-[15px] font-semibold">Recovery timeline</h2>
+                  <p class="text-[12.5px] text-muted">Failed vs recovered payments, hour by hour</p>
+                </div>
+                <div class="flex items-center gap-3.5 text-[12px]">
+                  <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-sm bg-danger"></span> Failed</span>
+                  <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-sm bg-success"></span> Recovered</span>
+                </div>
+              </div>
+              <div class="h-[248px]"><canvas id="chartTimeline" aria-label="Line chart of failed versus recovered payments per hour"></canvas></div>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <h2 class="text-[15px] font-semibold">Recovery rate by failure reason</h2>
+              <p class="mb-4 text-[12.5px] text-muted">Where the agent wins, and where it can't</p>
+              <div class="h-[248px]"><canvas id="chartReason" aria-label="Bar chart of recovery rate by failure reason"></canvas></div>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div class="card p-5 shadow-raised lg:col-span-2">
+              <h2 class="text-[15px] font-semibold">Channel effectiveness</h2>
+              <p class="mb-4 text-[12.5px] text-muted">Nudges sent → link opened → payment recovered</p>
+              <div class="h-[220px]"><canvas id="chartChannel" aria-label="Grouped bar chart of channel effectiveness"></canvas></div>
+            </div>
+            <div class="card p-5 shadow-raised">
+              <h2 class="text-[15px] font-semibold">Top recoveries today</h2>
+              <p class="mb-3 text-[12.5px] text-muted">Largest amounts brought back</p>
+              <ul id="topRecoveries" class="divide-y divide-line"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── LIVE AGENT FEED ─────────── -->
+        <section data-panel="feed" hidden>
+          <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h1 class="text-[26px] font-semibold tracking-[-.02em]">Live agent feed</h1>
+              <p class="mt-0.5 text-[13.5px] text-muted">Every decision, with the reasoning that produced it.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="pauseFeed" class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-3 py-2 text-[13px] font-medium text-muted transition-colors duration-150 hover:text-ink">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                <span id="pauseLabel">Pause</span>
+              </button>
+              <button id="triggerBtn2" class="inline-flex items-center gap-1.5 rounded-md bg-rzp px-3 py-2 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-rzp-bright">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>
+                Trigger a failure
+              </button>
+            </div>
+          </div>
+
+          <!-- Pipeline -->
+          <div class="card mb-4 p-4 shadow-raised sm:p-5">
+            <div id="pipeline" class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5"></div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div class="lg:col-span-2">
+              <div id="feedList" class="space-y-2.5" aria-live="polite" aria-label="Agent event stream"></div>
+            </div>
+            <div class="space-y-4">
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Agent vitals</h2>
+                <dl class="mt-3.5 space-y-3 text-[13px]">
+                  <div class="flex items-center justify-between"><dt class="text-muted">Events processed</dt><dd class="font-semibold tnum" id="vitalEvents">1,284</dd></div>
+                  <div class="flex items-center justify-between"><dt class="text-muted">Decisions made</dt><dd class="font-semibold tnum" id="vitalDecisions">312</dd></div>
+                  <div class="flex items-center justify-between"><dt class="text-muted">Median decision time</dt><dd class="font-semibold tnum">1.9s</dd></div>
+                  <div class="flex items-center justify-between"><dt class="text-muted">Avg confidence</dt><dd class="font-semibold tnum text-rzp">0.81</dd></div>
+                  <div class="flex items-center justify-between"><dt class="text-muted">Nudges suppressed</dt><dd class="font-semibold tnum text-warning">26</dd></div>
+                </dl>
+                <div class="mt-4 rounded-md border border-line bg-surface2 p-3">
+                  <p class="text-[11.5px] leading-snug text-muted"><span class="font-semibold text-ink">Guardrails active.</span> Quiet hours 22:00–08:00 IST, max 2 nudges per customer per 24h, never nudge a payment under ₹99.</p>
+                </div>
+              </div>
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Failure mix · last hour</h2>
+                <ul id="failureMix" class="mt-3.5 space-y-2.5"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── RECOVERIES ─────────── -->
+        <section data-panel="recoveries" hidden>
+          <div class="mb-5">
+            <h1 class="text-[26px] font-semibold tracking-[-.02em]">Recoveries</h1>
+            <p class="mt-0.5 text-[13.5px] text-muted">Every failed payment the agent picked up, and what happened next.</p>
+          </div>
+
+          <div class="card mb-4 flex flex-wrap items-center gap-2.5 p-3 shadow-raised">
+            <div class="relative min-w-[190px] flex-1">
+              <svg class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-subtle" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input id="fSearch" type="search" placeholder="Search customer, city or payment ID" class="w-full rounded-md border border-line bg-surface2 py-2 pl-9 pr-3 text-[13px] text-ink placeholder:text-subtle" aria-label="Search recoveries">
+            </div>
+            <select id="fStatus" class="rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink" aria-label="Filter by status"></select>
+            <select id="fReason" class="rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink" aria-label="Filter by failure reason"></select>
+            <select id="fChannel" class="rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink" aria-label="Filter by channel"></select>
+            <button id="fClear" class="rounded-md px-2.5 py-2 text-[13px] font-medium text-muted hover:text-ink">Clear</button>
+            <span id="fCount" class="ml-auto pr-1 text-[12.5px] text-subtle tnum"></span>
+          </div>
+
+          <div class="card overflow-hidden shadow-raised">
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[840px] text-left">
+                <thead class="bg-surface2 text-subtle">
+                  <tr class="eyebrow">
+                    <th class="px-4 py-2.5 font-semibold">Payment</th>
+                    <th class="px-4 py-2.5 font-semibold">Customer</th>
+                    <th class="px-4 py-2.5 text-right font-semibold">Amount</th>
+                    <th class="px-4 py-2.5 font-semibold">Failure reason</th>
+                    <th class="px-4 py-2.5 font-semibold">Agent action</th>
+                    <th class="px-4 py-2.5 font-semibold">Status</th>
+                    <th class="px-4 py-2.5 text-right font-semibold">When</th>
+                  </tr>
+                </thead>
+                <tbody id="txBody" class="divide-y divide-line text-[13px]"></tbody>
+              </table>
+            </div>
+            <div id="txEmpty" hidden class="px-6 py-14 text-center">
+              <p class="text-[14px] font-medium">Nothing matches those filters</p>
+              <p class="mt-1 text-[13px] text-muted">Try clearing the reason or channel filter.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────── LEARNING ─────────── -->
+        <section data-panel="learning" hidden>
+          <div class="mb-5">
+            <h1 class="text-[26px] font-semibold tracking-[-.02em]">Learning</h1>
+            <p class="mt-0.5 text-[13.5px] text-muted">The agent scores every outcome and rewrites its own playbook. Here's what it has learned so far.</p>
+          </div>
+
+          <div class="card mb-4 p-5 shadow-raised">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <h2 class="text-[15px] font-semibold">Recovery rate by failure reason × channel</h2>
+                <p class="text-[12.5px] text-muted">Darker green = higher recovery. Sample size in each cell.</p>
+              </div>
+              <div class="flex items-center gap-2 text-[11.5px] text-muted">
+                <span>0%</span>
+                <span class="h-2.5 w-28 rounded-full" style="background:linear-gradient(90deg, rgb(18 183 106 / .10), rgb(18 183 106 / 1))"></span>
+                <span>80%</span>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[620px] border-separate border-spacing-1 text-[13px]">
+                <thead>
+                  <tr class="eyebrow text-subtle">
+                    <th class="px-2 py-1 text-left font-semibold">Failure reason</th>
+                    <th class="px-2 py-1 font-semibold">WhatsApp</th>
+                    <th class="px-2 py-1 font-semibold">SMS</th>
+                    <th class="px-2 py-1 font-semibold">Email</th>
+                    <th class="px-2 py-1 font-semibold">Best play</th>
+                  </tr>
+                </thead>
+                <tbody id="matrixBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <h2 class="mb-3 mt-6 text-[15px] font-semibold">What the agent figured out</h2>
+          <div id="insightGrid" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+
+          <div class="card mt-4 p-5 shadow-raised">
+            <h2 class="text-[15px] font-semibold">Timing curve · nudge delay vs recovery rate</h2>
+            <p class="mb-4 text-[12.5px] text-muted">Averaged across all failure reasons. The agent targets the peak per reason, not this global one.</p>
+            <div class="h-[220px]"><canvas id="chartTiming" aria-label="Line chart of recovery rate versus nudge delay"></canvas></div>
+          </div>
+        </section>
+
+        <!-- ─────────── SETTINGS ─────────── -->
+        <section data-panel="settings" hidden>
+          <div class="mb-5">
+            <h1 class="text-[26px] font-semibold tracking-[-.02em]">Settings</h1>
+            <p class="mt-0.5 text-[13.5px] text-muted">How much rope the agent gets.</p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div class="space-y-4 lg:col-span-2">
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Autonomy level</h2>
+                <p class="mb-4 text-[12.5px] text-muted">Applies to every recovery action, including payment link creation.</p>
+                <div class="space-y-2.5" role="radiogroup" aria-label="Autonomy level">
+                  <label class="radiocard">
+                    <input type="radio" name="autonomy" value="suggest" class="peer sr-only">
+                    <span class="radiodot"></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">Suggest only</span>
+                      <span class="block text-[12.5px] text-muted">Agent diagnoses and drafts the nudge. Nothing is sent until you click send.</span>
+                    </span>
+                  </label>
+                  <label class="radiocard">
+                    <input type="radio" name="autonomy" value="approve" class="peer sr-only">
+                    <span class="radiodot"></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">Auto with approval</span>
+                      <span class="block text-[12.5px] text-muted">Acts instantly below ₹5,000. Anything larger waits in an approval queue.</span>
+                    </span>
+                  </label>
+                  <label class="radiocard">
+                    <input type="radio" name="autonomy" value="auto" class="peer sr-only" checked>
+                    <span class="radiodot"></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">Fully autonomous <span class="ml-1 rounded-sm bg-rzp/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rzp">Recommended</span></span>
+                      <span class="block text-[12.5px] text-muted">Agent detects, decides, creates links and sends nudges on its own, inside your guardrails.</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Channels</h2>
+                <p class="mb-4 text-[12.5px] text-muted">The agent picks the channel per failure reason from what's enabled here.</p>
+                <div class="divide-y divide-line">
+                  <div class="toggle-row" data-on="1">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-success-soft text-success"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.17c-.25.69-1.44 1.32-1.99 1.4-.53.08-1.19.11-1.92-.12-.44-.14-1.01-.33-1.74-.64-3.06-1.32-5.06-4.4-5.21-4.6-.15-.2-1.25-1.66-1.25-3.17s.79-2.25 1.07-2.56c.28-.31.61-.38.81-.38.2 0 .4 0 .58.01.19.01.44-.07.68.52.25.6.85 2.07.92 2.22.08.15.13.33.02.53-.1.2-.15.33-.3.5s-.31.39-.45.52c-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.06 1.3 2.35 1.45.3.15.47.13.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.28.1 1.74.82 2.04.97.3.15.5.22.57.35.07.13.07.75-.18 1.44Z"/></svg></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">WhatsApp Business</span>
+                      <span class="block text-[12.5px] text-muted">Best for OTP timeouts and UPI errors · 71% recovery</span>
+                    </span>
+                    <button class="switch" role="switch" aria-checked="true" aria-label="WhatsApp Business channel"><span class="knob"></span></button>
+                  </div>
+                  <div class="toggle-row" data-on="1">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-rzp/15 text-rzp"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">SMS</span>
+                      <span class="block text-[12.5px] text-muted">Fallback when WhatsApp is undelivered after 4 min · 42% recovery</span>
+                    </span>
+                    <button class="switch" role="switch" aria-checked="true" aria-label="SMS channel"><span class="knob"></span></button>
+                  </div>
+                  <div class="toggle-row" data-on="1">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-violet/15 text-violet"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">Email</span>
+                      <span class="block text-[12.5px] text-muted">High-value carts and card-update requests · 23% recovery</span>
+                    </span>
+                    <button class="switch" role="switch" aria-checked="true" aria-label="Email channel"><span class="knob"></span></button>
+                  </div>
+                  <div class="toggle-row" data-on="0">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-surface3 text-subtle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+                    <span class="min-w-0">
+                      <span class="block text-[13.5px] font-semibold">App push</span>
+                      <span class="block text-[12.5px] text-muted">Requires the Razorpay SDK push token. Not connected.</span>
+                    </span>
+                    <button class="switch" role="switch" aria-checked="false" aria-label="App push channel"><span class="knob"></span></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Guardrails</h2>
+                <p class="mb-4 text-[12.5px] text-muted">Hard limits the agent will not cross, whatever it decides.</p>
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <label class="mb-1.5 block text-[12.5px] font-medium" for="qhFrom">Quiet hours (IST)</label>
+                    <div class="flex items-center gap-2">
+                      <input id="qhFrom" type="time" value="22:00" class="w-full rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink tnum">
+                      <span class="text-subtle">to</span>
+                      <input id="qhTo" type="time" value="08:00" class="w-full rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink tnum">
+                    </div>
+                    <p class="mt-1.5 text-[11.5px] text-subtle">Nudges queue up and fire at 08:00.</p>
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-[12.5px] font-medium" for="maxNudges">Max nudges per customer / 24h — <span id="maxNudgesVal" class="font-semibold tnum text-rzp">2</span></label>
+                    <input id="maxNudges" type="range" min="1" max="5" value="2" class="w-full">
+                    <p class="mt-1.5 text-[11.5px] text-subtle">Above 3, unsubscribes rise faster than recoveries.</p>
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-[12.5px] font-medium" for="minAmt">Minimum amount to chase</label>
+                    <input id="minAmt" type="text" value="₹99" class="w-full rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink tnum">
+                  </div>
+                  <div>
+                    <label class="mb-1.5 block text-[12.5px] font-medium" for="window">Recovery window</label>
+                    <select id="window" class="w-full rounded-md border border-line bg-surface2 px-2.5 py-2 text-[13px] text-ink">
+                      <option>24 hours</option><option selected>48 hours</option><option>72 hours</option><option>7 days</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Razorpay connection</h2>
+                <ul class="mt-3.5 space-y-3">
+                  <li class="flex items-center gap-2.5">
+                    <span class="h-2 w-2 shrink-0 rounded-full bg-success"></span>
+                    <span class="min-w-0"><span class="block text-[13px] font-medium">API key</span><span class="block truncate font-mono text-[11.5px] text-muted">rzp_test_9kL2••••••4Qm1</span></span>
+                    <span class="ml-auto rounded-sm bg-success-soft px-1.5 py-0.5 text-[10.5px] font-semibold text-success">Active</span>
+                  </li>
+                  <li class="flex items-center gap-2.5">
+                    <span class="h-2 w-2 shrink-0 rounded-full bg-success"></span>
+                    <span class="min-w-0"><span class="block text-[13px] font-medium">Webhook</span><span class="block truncate font-mono text-[11.5px] text-muted">/api/webhooks/razorpay</span></span>
+                    <span class="ml-auto rounded-sm bg-success-soft px-1.5 py-0.5 text-[10.5px] font-semibold text-success">200 OK</span>
+                  </li>
+                  <li class="flex items-center gap-2.5">
+                    <span class="h-2 w-2 shrink-0 rounded-full bg-success"></span>
+                    <span class="min-w-0"><span class="block text-[13px] font-medium">Payment Links</span><span class="block text-[11.5px] text-muted">312 created in last 24h</span></span>
+                    <span class="ml-auto rounded-sm bg-success-soft px-1.5 py-0.5 text-[10.5px] font-semibold text-success">Enabled</span>
+                  </li>
+                  <li class="flex items-center gap-2.5">
+                    <span class="h-2 w-2 shrink-0 rounded-full bg-warning"></span>
+                    <span class="min-w-0"><span class="block text-[13px] font-medium">Subscriptions</span><span class="block text-[11.5px] text-muted">Dunning for failed mandates</span></span>
+                    <span class="ml-auto rounded-sm bg-warning-soft px-1.5 py-0.5 text-[10.5px] font-semibold text-warning">Beta</span>
+                  </li>
+                </ul>
+                <button class="mt-4 w-full rounded-md border border-line bg-surface2 px-3 py-2 text-[13px] font-semibold transition-colors duration-150 hover:border-lineStrong">Manage keys</button>
+              </div>
+
+              <div class="card p-5 shadow-raised">
+                <h2 class="text-[15px] font-semibold">Events subscribed</h2>
+                <ul class="mt-3 space-y-1.5 font-mono text-[11.5px] text-muted">
+                  <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-rzp"></span>payment.failed</li>
+                  <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-rzp"></span>payment.captured</li>
+                  <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-rzp"></span>payment_link.paid</li>
+                  <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-rzp"></span>order.paid</li>
+                  <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-rzp"></span>subscription.charged</li>
+                </ul>
+              </div>
+
+              <div class="rounded-lg border border-danger/25 bg-danger-soft/40 p-5">
+                <h2 class="text-[14px] font-semibold text-danger">Pause the agent</h2>
+                <p class="mt-1 text-[12.5px] text-muted">Stops all outbound nudges immediately. Detection and diagnosis keep running so nothing is lost.</p>
+                <button class="mt-3 rounded-md border border-danger/40 px-3 py-1.5 text-[13px] font-semibold text-danger transition-colors duration-150 hover:bg-danger/10">Pause all recoveries</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════ DRAWER ═══════════ -->
+<div id="drawerScrim" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<aside id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1"
+  class="fixed inset-y-0 right-0 z-50 w-full max-w-[540px] translate-x-full overflow-y-auto border-l border-line bg-surface shadow-overlay transition-transform duration-300 ease-out scroll-thin">
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- ═══════════ TRIGGER MODAL ═══════════ -->
+<div id="modalScrim" class="fixed inset-0 z-50 grid place-items-center bg-black/65 p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1"
+    class="w-full max-w-[460px] scale-95 rounded-xl border border-line bg-surface p-6 shadow-modal transition-transform duration-200 ease-out">
+    <div class="flex items-start gap-3">
+      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-md grad-agent text-white">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>
+      </span>
+      <div>
+        <h2 id="modalTitle" class="text-[16px] font-semibold">Trigger a failed payment</h2>
+        <p class="text-[12.5px] text-muted">Fires a simulated <span class="font-mono">payment.failed</span> webhook. Watch the agent handle it end to end.</p>
+      </div>
+      <button id="modalClose" class="ml-auto rounded-md p-1.5 text-muted hover:bg-surface2 hover:text-ink" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mt-5 space-y-3.5">
+      <div>
+        <label for="simReason" class="mb-1.5 block text-[12.5px] font-medium">Failure reason</label>
+        <select id="simReason" class="w-full rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] text-ink"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="simAmount" class="mb-1.5 block text-[12.5px] font-medium">Amount (₹)</label>
+          <input id="simAmount" type="number" min="99" step="1" value="1249" class="w-full rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] text-ink tnum">
+        </div>
+        <div>
+          <label for="simMethod" class="mb-1.5 block text-[12.5px] font-medium">Method</label>
+          <select id="simMethod" class="w-full rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] text-ink">
+            <option>UPI</option><option>Card</option><option>Netbanking</option><option>Wallet</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="simCustomer" class="mb-1.5 block text-[12.5px] font-medium">Customer</label>
+        <select id="simCustomer" class="w-full rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] text-ink"></select>
+      </div>
+    </div>
+    <div class="mt-6 flex gap-2.5">
+      <button id="modalCancel" class="flex-1 rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] font-semibold transition-colors duration-150 hover:border-lineStrong">Cancel</button>
+      <button id="simRun" class="flex-1 rounded-md bg-rzp px-3 py-2.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-rzp-bright">Fire webhook</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-[60] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 translate-y-4 rounded-lg border border-line bg-surface p-3.5 opacity-0 shadow-overlay transition-all duration-300 ease-out"></div>
+
+<script>
+/* ════════════════════════ 0. utility ════════════════════════ */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const inr = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const inrShort = n => n >= 1e7 ? '₹' + (n/1e7).toFixed(2) + 'Cr' : n >= 1e5 ? '₹' + (n/1e5).toFixed(1) + 'L' : n >= 1000 ? '₹' + (n/1000).toFixed(1) + 'k' : '₹' + n;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let seed = 20260215;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+const pick = a => a[Math.floor(rnd() * a.length)];
+const pickTrue = a => a[Math.floor(Math.random() * a.length)];
+
+/* ════════════════════════ 1. component classes ════════════════════════ */
+(function injectComponentStyles(){
+  const css = `
+  .navbtn{ display:flex; align-items:center; gap:10px; width:100%; padding:8px 10px; border-radius:8px; font-size:13.5px; font-weight:500;
+           color:rgb(var(--text-muted)); transition:background-color .12s, color .12s; }
+  .navbtn svg{ width:17px; height:17px; flex:none; }
+  .navbtn:hover{ background:rgb(var(--surface-2)); color:rgb(var(--text)); }
+  .navbtn[aria-current="page"]{ background:rgb(43 132 234 / .13); color:#528FF0; font-weight:600; }
+  .seg{ padding:5px 12px; border-radius:7px; font-size:12.5px; font-weight:500; color:rgb(var(--text-muted)); transition:.12s; }
+  .seg:hover{ color:rgb(var(--text)); }
+  .seg-on{ background:rgb(var(--surface-2)); color:rgb(var(--text)); font-weight:600; }
+  .radiocard{ display:flex; gap:11px; align-items:flex-start; padding:13px 14px; border:1px solid rgb(var(--border)); border-radius:10px;
+              cursor:pointer; transition:border-color .12s, background-color .12s; }
+  .radiocard:hover{ border-color:rgb(var(--border-strong)); }
+  .radiocard:has(input:checked){ border-color:#2B84EA; background:rgb(43 132 234 / .07); }
+  .radiocard:has(input:focus-visible){ box-shadow:0 0 0 2px rgb(var(--bg)), 0 0 0 4px #2B84EA; }
+  .radiodot{ margin-top:2px; width:16px; height:16px; flex:none; border-radius:99px; border:2px solid rgb(var(--border-strong)); transition:.12s; }
+  .radiocard:has(input:checked) .radiodot{ border-color:#2B84EA; border-width:5px; }
+  .toggle-row{ display:flex; align-items:center; gap:12px; padding:13px 0; }
+  .switch{ margin-left:auto; position:relative; width:38px; height:22px; flex:none; border-radius:99px; background:rgb(var(--surface-3)); transition:background-color .18s; }
+  .switch[aria-checked="true"]{ background:#12B76A; }
+  .knob{ position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:99px; background:#fff; transition:transform .18s cubic-bezier(.16,1,.3,1); box-shadow:0 1px 3px rgb(0 0 0 /.3); }
+  .switch[aria-checked="true"] .knob{ transform:translateX(16px); }
+  .badge{ display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:99px; font-size:11.5px; font-weight:600; white-space:nowrap; }
+  .chip{ display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:6px; font-size:11.5px; font-weight:500;
+         background:rgb(var(--surface-2)); color:rgb(var(--text-muted)); white-space:nowrap; }
+  .txrow{ cursor:pointer; transition:background-color .12s; }
+  .txrow:hover{ background:rgb(var(--surface-2)); }
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .focus\\:not-sr-only:focus{ position:static; width:auto; height:auto; margin:0; overflow:visible; clip:auto; white-space:normal; }
+  `;
+  const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
+})();
+
+/* ════════════════════════ 2. domain data ════════════════════════ */
+const REASONS = {
+  OTP_TIMEOUT:        { label:'OTP timed out',        rate:.71, tone:'warning', low:'an OTP timeout', plural:'OTP timeouts', play:'One-tap UPI intent link on WhatsApp, within 90 seconds', why:'the customer is still on their phone and the intent is fresh' },
+  BANK_DOWN:          { label:'Bank downtime',        rate:.62, tone:'danger', low:'bank downtime', plural:'bank downtime',  play:'Hold, watch bank health, retry on an alternate rail', why:'retrying into a down bank burns the customer’s patience, not their money' },
+  NETWORK_DROP:       { label:'Network dropped',      rate:.66, tone:'warning', low:'a dropped connection', plural:'dropped connections', play:'Silent retry, then a resume-checkout link', why:'the session was healthy, only the connection wasn’t' },
+  UPI_APP_ERROR:      { label:'UPI app error',        rate:.58, tone:'warning', low:'a UPI app error', plural:'UPI app errors', play:'Switch PSP handle and resend the intent', why:'the collect request failed at the app, not at the bank' },
+  INSUFFICIENT_FUNDS: { label:'Insufficient funds',   rate:.38, tone:'danger', low:'insufficient funds', plural:'insufficient-funds failures',  play:'Wait for salary-day window, then a gentle WhatsApp nudge', why:'balance recovers on a calendar, not on a reminder' },
+  CARD_DECLINED:      { label:'Card declined',        rate:.34, tone:'danger', low:'an issuer decline', plural:'issuer declines',  play:'Offer UPI or netbanking instead of the same card', why:'issuer declines repeat 4 times out of 5 on retry' },
+  LIMIT_EXCEEDED:     { label:'Limit exceeded',       rate:.31, tone:'warning', low:'a transaction-limit breach', plural:'limit breaches', play:'Suggest netbanking or split the payment', why:'the per-transaction cap will not move today' },
+  CARD_EXPIRED:       { label:'Card expired',         rate:.29, tone:'danger', low:'an expired card', plural:'expired cards',  play:'Secure card-update link over email plus WhatsApp ping', why:'the customer needs their wallet, so give them a link that waits' },
+  CART_ABANDONED:     { label:'Cart abandoned',       rate:.22, tone:'warning', low:'an abandoned cart', plural:'abandoned carts', play:'Delayed nudge at 42 minutes with the saved cart', why:'immediate nudges read as pushy and convert worse' },
+  USER_CANCELLED:     { label:'User cancelled',       rate:.17, tone:'danger', low:'a deliberate cancel', plural:'deliberate cancels',  play:'A single low-pressure reminder, then stop', why:'a second nudge after a deliberate cancel costs more trust than it earns' },
+};
+const REASON_KEYS = Object.keys(REASONS);
+
+const CHANNELS = {
+  whatsapp: { label:'WhatsApp', tone:'success' },
+  sms:      { label:'SMS',      tone:'info' },
+  email:    { label:'Email',    tone:'violet' },
+};
+
+const STATUSES = {
+  recovered:   { label:'Recovered',    tone:'success' },
+  in_progress: { label:'In progress',  tone:'warning' },
+  nudged:      { label:'Nudge sent',   tone:'info' },
+  scheduled:   { label:'Scheduled',    tone:'violet' },
+  lost:        { label:'Lost',         tone:'danger' },
+};
+
+const CUSTOMERS = [
+  ['Priya Deshmukh','Pune'],['Arjun Mehta','Bengaluru'],['Ananya Iyer','Chennai'],['Rohan Desai','Ahmedabad'],
+  ['Sneha Nair','Kochi'],['Vikram Rathore','Jaipur'],['Kavya Reddy','Hyderabad'],['Aditya Banerjee','Kolkata'],
+  ['Ishita Kulkarni','Nagpur'],['Rahul Verma','New Delhi'],['Meera Pillai','Thiruvananthapuram'],['Karthik Subramanian','Coimbatore'],
+  ['Neha Gupta','Lucknow'],['Siddharth Joshi','Indore'],['Tanvi Shah','Surat'],['Aman Chauhan','Chandigarh'],
+  ['Divya Menon','Mysuru'],['Harsh Agarwal','Kanpur'],['Ritu Malhotra','Gurugram'],['Nikhil Pawar','Nashik'],
+  ['Sanjana Rao','Visakhapatnam'],['Farhan Qureshi','Bhopal'],['Pooja Bhatt','Vadodara'],['Yash Thakur','Ludhiana'],
+  ['Aisha Khan','Mumbai'],['Manish Tiwari','Patna'],['Lakshmi Venkatesh','Madurai'],['Gaurav Sinha','Ranchi'],
+  ['Shreya Ghosh','Howrah'],['Devansh Jain','Udaipur'],
+];
+const PRODUCTS = ['Cold-pressed oil bundle','Monthly grocery box','Organic staples crate','Fresh produce weekly','Artisanal snack pack','Household essentials kit','Premium coffee subscription','Baby care hamper','Festive gifting box','Cleaning supplies refill'];
+const METHODS = ['UPI','Card','Netbanking','Wallet'];
+const UPI_APPS = ['Google Pay','PhonePe','Paytm','BHIM','Amazon Pay'];
+const BANKS = ['HDFC Bank','ICICI Bank','SBI','Axis Bank','Kotak','Yes Bank'];
+
+const initials = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const phoneFor = i => '+91 9' + String(8000000 + i*13711).slice(0,7).replace(/(\d{4})(\d{3})/,'$1$2') + '••';
+const emailFor = n => n.toLowerCase().split(' ')[0] + '.' + n.toLowerCase().split(' ')[1].slice(0,3) + '@gmail.com';
+
+/* — message copy per reason — */
+function messageFor(tx){
+  const first = tx.name.split(' ')[0];
+  const amt = inr(tx.amount);
+  switch(tx.reason){
+    case 'OTP_TIMEOUT': return `Hi ${first}! Your ${amt} order at Urban Basket didn't go through — the OTP expired. No need to start over — just tap to pay with ${tx.upiApp || 'UPI'}: rzp.io/l/ub-${tx.short} ✅ Cart held for 48h.`;
+    case 'BANK_DOWN': return `Hi ${first}, ${tx.bank} was having a rough few minutes and your ${amt} payment couldn't go through. It's back up now — one tap to finish: rzp.io/l/ub-${tx.short}`;
+    case 'INSUFFICIENT_FUNDS': return `Hi ${first}! Your Urban Basket order of ${amt} is still saved. Whenever you're ready, you can pay here — UPI, card or netbanking: rzp.io/l/ub-${tx.short} 🧺`;
+    case 'CARD_EXPIRED': return `Hi ${first}, the card ending ${tx.last4} on your ${amt} order has expired. Update it securely in 20 seconds — we never see the number: rzp.io/l/ub-${tx.short}`;
+    case 'CARD_DECLINED': return `Hi ${first}, your bank declined the ${amt} payment on the card ending ${tx.last4}. UPI usually goes through instantly — try here: rzp.io/l/ub-${tx.short}`;
+    case 'UPI_APP_ERROR': return `Hi ${first}! ${tx.upiApp} threw an error on your ${amt} payment. Here's a fresh link that works on any UPI app: rzp.io/l/ub-${tx.short}`;
+    case 'NETWORK_DROP': return `Hi ${first}, looks like your connection dropped mid-payment. Your ${amt} cart is exactly where you left it — resume here: rzp.io/l/ub-${tx.short}`;
+    case 'CART_ABANDONED': return `Hi ${first}! Your ${tx.product} (${amt}) is still in your Urban Basket cart. Checkout takes one tap: rzp.io/l/ub-${tx.short} 🛒`;
+    case 'LIMIT_EXCEEDED': return `Hi ${first}, your ${amt} payment crossed your ${tx.bank} per-transaction limit. Netbanking has no such cap — pay here: rzp.io/l/ub-${tx.short}`;
+    default: return `Hi ${first}, you cancelled the ${amt} payment at Urban Basket. If it was a mistake, your cart is saved for 48 hours: rzp.io/l/ub-${tx.short}`;
+  }
+}
+
+function reasoningFor(tx){
+  const first = tx.name.split(' ')[0];
+  const r = REASONS[tx.reason];
+  const ch = CHANNELS[tx.channel].label;
+  const pct = Math.round(r.rate*100);
+  return `Detected ${r.low} on a ${inr(tx.amount)} ${tx.method} payment from ${first} (${tx.city}). ` +
+         `Chose ${ch} ${tx.delayLabel} because ${r.plural} recover ${pct}% with this play, versus ${Math.round(r.rate*100*0.42)}% on a generic email blast — ${r.why}. ` +
+         `${first} has opened ${tx.openRate}% of past ${ch} nudges, so no fallback channel was queued yet.`;
+}
+
+/* — build ~50 transactions — */
+const NOW = new Date('2026-02-15T18:42:00+05:30');
+const TX = [];
+const reasonWeights = ['OTP_TIMEOUT','OTP_TIMEOUT','OTP_TIMEOUT','INSUFFICIENT_FUNDS','INSUFFICIENT_FUNDS','INSUFFICIENT_FUNDS','BANK_DOWN','BANK_DOWN','UPI_APP_ERROR','UPI_APP_ERROR','CARD_DECLINED','CARD_DECLINED','NETWORK_DROP','CART_ABANDONED','CART_ABANDONED','CARD_EXPIRED','LIMIT_EXCEEDED','USER_CANCELLED'];
+for (let i = 0; i < 52; i++){
+  const [name, city] = CUSTOMERS[i % CUSTOMERS.length];
+  const reason = reasonWeights[Math.floor(rnd()*reasonWeights.length)];
+  const rmeta = REASONS[reason];
+  const bigTicket = rnd() < .18;
+  const amount = bigTicket ? Math.round((4000 + rnd()*22000)/10)*10 : Math.round((249 + rnd()*3800)/10)*10;
+  const method = reason.startsWith('CARD') ? 'Card' : reason === 'UPI_APP_ERROR' ? 'UPI' : reason === 'OTP_TIMEOUT' ? (rnd() < .78 ? 'UPI':'Card') : pick(METHODS);
+  const channel = reason === 'CART_ABANDONED' ? (rnd()<.5?'email':'whatsapp')
+                : reason === 'CARD_EXPIRED' ? (rnd()<.6?'email':'whatsapp')
+                : reason === 'INSUFFICIENT_FUNDS' ? (rnd()<.65?'whatsapp':'sms')
+                : (rnd()<.72?'whatsapp':(rnd()<.6?'sms':'email'));
+  const roll = rnd();
+  let status;
+  if (i < 6) status = roll < .5 ? 'in_progress' : 'nudged';
+  else if (roll < rmeta.rate) status = 'recovered';
+  else if (roll < rmeta.rate + .10) status = 'scheduled';
+  else if (roll < rmeta.rate + .20) status = 'nudged';
+  else status = 'lost';
+  const minsAgo = Math.round(2 + i*13.5 + rnd()*9);
+  const failedAt = new Date(NOW - minsAgo*60000);
+  const decideMs = 900 + Math.round(rnd()*2600);
+  const delaySec = reason === 'CART_ABANDONED' ? 2520 : reason === 'INSUFFICIENT_FUNDS' ? 10800 : reason === 'BANK_DOWN' ? 420 : 90 + Math.round(rnd()*120);
+  const delayLabel = delaySec >= 3600 ? `after ${Math.round(delaySec/3600)}h` : delaySec >= 600 ? `after ${Math.round(delaySec/60)} min` : `within ${delaySec}s`;
+  const recoverMins = 3 + Math.round(rnd()*38);
+  TX.push({
+    id: 'pay_Q' + (7 + i).toString(36).toUpperCase() + Math.floor(rnd()*8999+1000) + 'Xr',
+    short: (1000 + i).toString(36) + Math.floor(rnd()*90+10),
+    name, city, initials: initials(name), phone: phoneFor(i), email: emailFor(name),
+    amount, method, reason, channel, status,
+    upiApp: pick(UPI_APPS), bank: pick(BANKS), last4: String(1000 + Math.floor(rnd()*8999)).slice(0,4),
+    product: PRODUCTS[i % PRODUCTS.length],
+    confidence: clamp(rmeta.rate + .18 + rnd()*.14, .42, .96),
+    failedAt, minsAgo, decideMs, delaySec, delayLabel, recoverMins,
+    openRate: 40 + Math.floor(rnd()*55),
+    attempt: 1 + (rnd() < .22 ? 1 : 0),
+  });
+  TX[TX.length-1].message = messageFor(TX[TX.length-1]);
+  TX[TX.length-1].reasoning = reasoningFor(TX[TX.length-1]);
+}
+
+const agoLabel = m => m < 1 ? 'just now' : m < 60 ? m + 'm ago' : m < 1440 ? Math.floor(m/60) + 'h ' + (m%60) + 'm ago' : Math.floor(m/1440) + 'd ago';
+const timeLabel = d => d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false});
+
+/* ════════════════════════ 3. shared renderers ════════════════════════ */
+const toneClass = {
+  success:'bg-success-soft text-success', warning:'bg-warning-soft text-warning',
+  danger:'bg-danger-soft text-danger', info:'bg-rzp/15 text-rzp', violet:'bg-violet/15 text-violet',
+};
+const statusBadge = s => `<span class="badge ${toneClass[STATUSES[s].tone]}"><span class="h-1.5 w-1.5 rounded-full bg-current"></span>${STATUSES[s].label}</span>`;
+const channelIcon = c => ({
+  whatsapp:'<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.17c-.25.69-1.44 1.32-1.99 1.4-.53.08-1.19.11-1.92-.12-.44-.14-1.01-.33-1.74-.64-3.06-1.32-5.06-4.4-5.21-4.6-.15-.2-1.25-1.66-1.25-3.17s.79-2.25 1.07-2.56c.28-.31.61-.38.81-.38.2 0 .4 0 .58.01.19.01.44-.07.68.52.25.6.85 2.07.92 2.22.08.15.13.33.02.53-.1.2-.15.33-.3.5s-.31.39-.45.52c-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.06 1.3 2.35 1.45.3.15.47.13.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.28.1 1.74.82 2.04.97.3.15.5.22.57.35.07.13.07.75-.18 1.44Z"/></svg>',
+  sms:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/></svg>',
+  email:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>',
+}[c]);
+const channelBadge = c => `<span class="badge ${toneClass[CHANNELS[c].tone]}">${channelIcon(c)}${CHANNELS[c].label}</span>`;
+const methodIcon = m => m === 'UPI'
+  ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="m6 4 6 8-6 8"/><path d="m13 4 6 8-6 8"/></svg>'
+  : m === 'Card' ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg>'
+  : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 21h18M4 21V10m4 11V10m4 11V10m4 11V10m4 11V10M2.6 8 12 3l9.4 5"/></svg>';
+
+function confidenceBar(c){
+  const pct = Math.round(c*100);
+  const segs = Array.from({length:10}, (_,i) =>
+    `<span class="h-1.5 flex-1 rounded-[2px] ${i < Math.round(pct/10) ? (pct>=75?'bg-success':pct>=55?'bg-warning':'bg-danger') : 'bg-surface3'}"></span>`).join('');
+  return `<div class="flex items-center gap-2"><div class="flex flex-1 gap-[3px]">${segs}</div><span class="text-[12px] font-semibold tnum">${(c).toFixed(2)}</span></div>`;
+}
+
+/* ════════════════════════ 4. navigation ════════════════════════ */
+let currentView = 'overview';
+function go(view){
+  currentView = view;
+  $$('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== view);
+  $$('.navbtn').forEach(b => b.setAttribute('aria-current', b.dataset.view === view ? 'page' : 'false'));
+  window.scrollTo({top:0, behavior: reduceMotion ? 'auto':'smooth'});
+  closeSidebarFn();
+  if (view === 'feed') { $('#feedBadge').hidden = true; }
+  if (view === 'overview') buildOverviewCharts();
+  if (view === 'learning') buildTimingChart();
+  try { history.replaceState(null,'','#'+view); } catch(e){}
+}
+$$('.navbtn').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
+const openSidebarFn = () => { $('#sidebar').classList.remove('-translate-x-full'); const s=$('#scrim'); s.classList.remove('opacity-0','pointer-events-none'); };
+const closeSidebarFn = () => { if (window.innerWidth < 1024) $('#sidebar').classList.add('-translate-x-full'); const s=$('#scrim'); s.classList.add('opacity-0','pointer-events-none'); };
+$('#openSidebar').addEventListener('click', openSidebarFn);
+$('#closeSidebar').addEventListener('click', closeSidebarFn);
+$('#scrim').addEventListener('click', closeSidebarFn);
+
+/* ════════════════════════ 5. theme ════════════════════════ */
+function setTheme(light){
+  document.documentElement.classList.toggle('light', light);
+  $('#iconMoon').hidden = light; $('#iconSun').hidden = !light;
+  try { localStorage.setItem('ra-theme', light ? 'light':'dark'); } catch(e){}
+  Object.values(charts).forEach(c => c && c.destroy());
+  charts = {};
+  if (currentView === 'overview') buildOverviewCharts();
+  if (currentView === 'learning') buildTimingChart();
+}
+$('#themeBtn').addEventListener('click', () => setTheme(!document.documentElement.classList.contains('light')));
+try { if (localStorage.getItem('ra-theme') === 'light') setTheme(true); } catch(e){}
+
+/* ════════════════════════ 6. count-ups & live money ════════════════════════ */
+function countUp(el){
+  const target = parseFloat(el.dataset.count);
+  const dec = parseInt(el.dataset.dec || '0', 10);
+  const pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+  const fmt = v => pre + (pre === '₹' ? Math.round(v).toLocaleString('en-IN') : v.toFixed(dec)) + suf;
+  if (reduceMotion){ el.textContent = fmt(target); return; }
+  const t0 = performance.now(), dur = 900;
+  const step = t => {
+    const p = clamp((t - t0)/dur, 0, 1);
+    el.textContent = fmt(target * (1 - Math.pow(1-p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+$$('[data-count]').forEach(countUp);
+
+let atRisk = 4218650, saved = 1442380;
+function tickMoney(){
+  atRisk += Math.round(180 + Math.random()*2400);
+  saved  += Math.round(60 + Math.random()*820);
+  $('#moneyCounter').textContent = inr(atRisk);
+  $('#moneySaved').textContent = inr(saved);
+}
+tickMoney(); setInterval(tickMoney, 1800);
+
+let webhooks = 1284;
+setInterval(() => { webhooks += Math.floor(Math.random()*3); $('#webhookCount').textContent = webhooks.toLocaleString('en-IN'); $('#vitalEvents').textContent = webhooks.toLocaleString('en-IN'); }, 4000);
+let lastDecision = 4;
+setInterval(() => { lastDecision = lastDecision > 40 ? 2 : lastDecision + 1; $('#lastDecisionAgo').textContent = lastDecision + 's'; }, 1000);
+
+/* ════════════════════════ 7. charts ════════════════════════ */
+let charts = {};
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function chartTheme(){
+  const grid = `rgb(${cssVar('--grid')} / .07)`;
+  const tick = `rgb(${cssVar('--text-muted')})`;
+  return { grid, tick,
+    tooltip:{ backgroundColor:`rgb(${cssVar('--surface-3')})`, titleColor:`rgb(${cssVar('--text')})`, bodyColor:`rgb(${cssVar('--text-muted')})`,
+      borderColor:`rgb(${cssVar('--border-strong')})`, borderWidth:1, padding:10, cornerRadius:8, displayColors:true, boxPadding:4 } };
+}
+const HOURS = Array.from({length:24}, (_,i) => String(i).padStart(2,'0') + ':00');
+const FAILED_SERIES  = [9,6,4,3,2,3,7,14,23,31,38,42,47,44,39,36,41,52,61,58,49,37,24,15];
+const RECOVERED_SERIES = FAILED_SERIES.map((v,i) => Math.round(v * (0.26 + (i>=8 && i<=20 ? 0.14 : 0.04) + (i%3)*0.015)));
+
+function buildOverviewCharts(){
+  if (charts.timeline) return;
+  const t = chartTheme();
+  const c1 = $('#chartTimeline').getContext('2d');
+  const gF = c1.createLinearGradient(0,0,0,240); gF.addColorStop(0,'rgb(240 68 56 / .28)'); gF.addColorStop(1,'rgb(240 68 56 / 0)');
+  const gR = c1.createLinearGradient(0,0,0,240); gR.addColorStop(0,'rgb(18 183 106 / .30)'); gR.addColorStop(1,'rgb(18 183 106 / 0)');
+  charts.timeline = new Chart(c1, {
+    type:'line',
+    data:{ labels:HOURS, datasets:[
+      { label:'Failed', data:FAILED_SERIES, borderColor:'#F04438', backgroundColor:gF, fill:true, tension:.38, borderWidth:2, pointRadius:0, pointHoverRadius:4, pointHoverBackgroundColor:'#F04438' },
+      { label:'Recovered', data:RECOVERED_SERIES, borderColor:'#12B76A', backgroundColor:gR, fill:true, tension:.38, borderWidth:2, pointRadius:0, pointHoverRadius:4, pointHoverBackgroundColor:'#12B76A' },
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration: reduceMotion?0:700},
+      interaction:{mode:'index', intersect:false},
+      plugins:{ legend:{display:false}, tooltip:t.tooltip },
+      scales:{ x:{ grid:{display:false}, border:{display:false}, ticks:{ color:t.tick, font:{size:11}, maxRotation:0, autoSkip:true, maxTicksLimit:8 } },
+               y:{ grid:{color:t.grid}, border:{display:false}, ticks:{ color:t.tick, font:{size:11}, precision:0 }, beginAtZero:true } } }
+  });
+
+  const topReasons = REASON_KEYS.slice(0,8);
+  charts.reason = new Chart($('#chartReason'), {
+    type:'bar',
+    data:{ labels: topReasons.map(k => REASONS[k].label),
+      datasets:[{ label:'Recovery rate', data: topReasons.map(k => Math.round(REASONS[k].rate*100)),
+        backgroundColor: topReasons.map((k,i) => i===0 ? '#12B76A' : `rgb(43 132 234 / ${0.95 - i*0.08})`),
+        borderRadius:5, borderSkipped:false, barThickness:14 }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, animation:{duration: reduceMotion?0:700},
+      plugins:{ legend:{display:false}, tooltip:{...t.tooltip, callbacks:{ label: c => ' ' + c.parsed.x + '% recovered' } } },
+      scales:{ x:{ grid:{color:t.grid}, border:{display:false}, ticks:{ color:t.tick, font:{size:11}, callback:v=>v+'%' }, max:80 },
+               y:{ grid:{display:false}, border:{display:false}, ticks:{ color:t.tick, font:{size:11} } } } }
+  });
+
+  charts.channel = new Chart($('#chartChannel'), {
+    type:'bar',
+    data:{ labels:['WhatsApp','SMS','Email'], datasets:[
+      { label:'Nudges sent', data:[1840, 962, 1310], backgroundColor:'rgb(43 132 234 / .35)', borderRadius:5, borderSkipped:false },
+      { label:'Link opened', data:[1418, 501, 402],  backgroundColor:'rgb(43 132 234 / .8)',  borderRadius:5, borderSkipped:false },
+      { label:'Recovered',   data:[1306, 404, 301],  backgroundColor:'#12B76A',               borderRadius:5, borderSkipped:false },
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration: reduceMotion?0:700},
+      plugins:{ legend:{ position:'bottom', labels:{ color:t.tick, boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'rectRounded', font:{size:11.5}, padding:16 } }, tooltip:t.tooltip },
+      scales:{ x:{ grid:{display:false}, border:{display:false}, ticks:{ color:t.tick, font:{size:12} } },
+               y:{ grid:{color:t.grid}, border:{display:false}, ticks:{ color:t.tick, font:{size:11} }, beginAtZero:true } } }
+  });
+}
+
+function buildTimingChart(){
+  if (charts.timing) return;
+  const t = chartTheme();
+  charts.timing = new Chart($('#chartTiming'), {
+    type:'line',
+    data:{ labels:['0–2 min','2–5 min','5–10 min','10–30 min','30–60 min','1–3 h','3–12 h','12–48 h'],
+      datasets:[{ label:'Recovery rate', data:[47,58,54,44,36,29,22,14], borderColor:'#2B84EA', backgroundColor:'rgb(43 132 234 / .12)',
+        fill:true, tension:.4, borderWidth:2.5, pointRadius:4, pointBackgroundColor:'#2B84EA', pointBorderColor:`rgb(${cssVar('--surface')})`, pointBorderWidth:2 }]},
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration: reduceMotion?0:700},
+      plugins:{ legend:{display:false}, tooltip:{...t.tooltip, callbacks:{ label:c=>' '+c.parsed.y+'% recovered' } } },
+      scales:{ x:{ grid:{display:false}, border:{display:false}, ticks:{color:t.tick, font:{size:11}} },
+               y:{ grid:{color:t.grid}, border:{display:false}, ticks:{color:t.tick, font:{size:11}, callback:v=>v+'%'}, beginAtZero:true, max:70 } } }
+  });
+}
+
+/* ════════════════════════ 8. overview extras ════════════════════════ */
+(function renderTopRecoveries(){
+  const rows = TX.filter(t => t.status === 'recovered').sort((a,b)=>b.amount-a.amount).slice(0,5);
+  $('#topRecoveries').innerHTML = rows.map(t => `
+    <li class="flex items-center gap-3 py-2.5">
+      <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-surface3 text-[11px] font-semibold text-muted">${t.initials}</span>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-[13px] font-medium">${t.name}</span>
+        <span class="block truncate text-[11.5px] text-muted">${REASONS[t.reason].label} · ${CHANNELS[t.channel].label}</span>
+      </span>
+      <span class="text-right">
+        <span class="block text-[13px] font-semibold tnum text-success">${inr(t.amount)}</span>
+        <span class="block text-[11px] text-subtle tnum">${t.recoverMins}m</span>
+      </span>
+    </li>`).join('');
+})();
+
+(function renderFailureMix(){
+  const counts = {};
+  TX.forEach(t => counts[t.reason] = (counts[t.reason]||0)+1);
+  const total = TX.length;
+  const rows = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  $('#failureMix').innerHTML = rows.map(([k,v]) => {
+    const pct = Math.round(v/total*100);
+    return `<li>
+      <div class="mb-1 flex items-center justify-between text-[12.5px]"><span>${REASONS[k].label}</span><span class="font-semibold tnum text-muted">${pct}%</span></div>
+      <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface3"><div class="h-full rounded-full bg-rzp" style="width:${pct*2.4}%"></div></div>
+    </li>`;
+  }).join('');
+})();
+
+$$('[data-range]').forEach(b => b.addEventListener('click', () => {
+  $$('[data-range]').forEach(x => x.classList.remove('seg-on'));
+  b.classList.add('seg-on');
+  toast(`Range set to ${b.textContent.trim()} — 1,284 events re-scored.`);
+}));
+
+/* ════════════════════════ 9. live agent feed ════════════════════════ */
+const STAGES = [
+  { key:'DETECT',   label:'Detect',   sub:'payment.failed webhook' },
+  { key:'DIAGNOSE', label:'Diagnose', sub:'classify failure reason' },
+  { key:'DECIDE',   label:'Decide',   sub:'strategy · channel · timing' },
+  { key:'ACT',      label:'Act',      sub:'payment link + nudge' },
+  { key:'LEARN',    label:'Learn',    sub:'score outcome, update play' },
+];
+const STAGE_TONE = { DETECT:'info', DIAGNOSE:'warning', DECIDE:'violet', ACT:'success', LEARN:'info' };
+let activeStage = -1;
+function renderPipeline(){
+  $('#pipeline').innerHTML = STAGES.map((s,i) => `
+    <div class="rounded-md border px-3 py-2.5 transition-colors duration-200 ${i===activeStage ? 'border-agent bg-agent/10 animate-breathe' : 'border-line bg-surface2'}">
+      <div class="flex items-center gap-2">
+        <span class="grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold ${i===activeStage?'bg-agent text-navy-deep':'bg-surface3 text-subtle'} tnum">${i+1}</span>
+        <span class="eyebrow ${i===activeStage?'text-agent':'text-muted'}">${s.label}</span>
+      </div>
+      <p class="mt-1.5 text-[11.5px] leading-snug ${i===activeStage?'text-ink':'text-subtle'}">${s.sub}</p>
+    </div>`).join('');
+}
+renderPipeline();
+
+function eventCard(ev){
+  const tone = STAGE_TONE[ev.stage];
+  return `<article class="card row-enter overflow-hidden shadow-raised">
+    <div class="flex items-start gap-3 p-4">
+      <span class="grid h-8 w-8 shrink-0 place-items-center rounded-md ${toneClass[tone]}">${ev.icon}</span>
+      <div class="min-w-0 flex-1">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span class="badge ${toneClass[tone]}">${ev.stage}</span>
+          <h3 class="text-[13.5px] font-semibold">${ev.title}</h3>
+          <span class="ml-auto shrink-0 text-[11.5px] text-subtle tnum">${ev.time}</span>
+        </div>
+        ${ev.reasoning ? `<p class="mt-2 border-l-2 border-agent/60 pl-3 text-[12.5px] leading-relaxed text-muted">${ev.reasoning}</p>` : ''}
+        ${ev.meta ? `<div class="mt-2.5 flex flex-wrap gap-1.5">${ev.meta.map(m=>`<span class="chip">${m}</span>`).join('')}</div>` : ''}
+        ${ev.link ? `<div class="mt-2.5 flex items-center gap-2 rounded-md border border-line bg-surface2 px-3 py-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="shrink-0 text-rzp"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+            <span class="truncate font-mono text-[11.5px] text-rzp">${ev.link}</span>
+            <span class="ml-auto shrink-0 rounded-sm bg-success-soft px-1.5 py-0.5 text-[10px] font-semibold text-success">201 Created</span>
+          </div>` : ''}
+        ${ev.message ? whatsappPreview(ev.message, ev.channel || 'whatsapp', ev.time) : ''}
+      </div>
+    </div>
+  </article>`;
+}
+const ICONS = {
+  detect:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>',
+  diagnose:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  decide:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5"/><path d="M5 8v8l7 5 7-5V8"/></svg>',
+  act:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>',
+  learn:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M5 10.5V16c0 1.7 3.1 3 7 3s7-1.3 7-3v-5.5"/></svg>',
+  win:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+};
+
+function whatsappPreview(text, channel='whatsapp', stamp='18:44'){
+  if (channel === 'whatsapp'){
+    return `<div class="mt-2.5 overflow-hidden rounded-md border border-line">
+      <div class="flex items-center gap-2 bg-[#075E54] px-3 py-1.5 text-white">
+        <span class="grid h-5 w-5 place-items-center rounded-full bg-white/20 text-[9px] font-bold">UB</span>
+        <span class="text-[11.5px] font-medium">Urban Basket</span>
+        <span class="ml-auto rounded-sm bg-white/15 px-1.5 py-0.5 text-[9.5px] font-semibold">Business</span>
+      </div>
+      <div class="wa-canvas p-3">
+        <div class="relative ml-auto max-w-[92%] rounded-lg wa-bubble px-3 py-2 text-[12.5px] leading-snug wa-tail">
+          ${text}
+          <div class="mt-1 flex items-center justify-end gap-1 text-[10px] text-[#4A7A5C]">
+            <span class="tnum">${stamp}</span>
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="#34B7F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 11 3 3 6-7"/><path d="m8 11 3 3 6-7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  if (channel === 'sms'){
+    return `<div class="mt-2.5 overflow-hidden rounded-md border border-line bg-surface2 p-3">
+      <div class="mb-1.5 flex items-center gap-2 text-[11px] text-subtle"><span class="font-mono">VM-URBSKT</span><span>·</span><span>DLT template 1207xxxx</span></div>
+      <p class="rounded-lg bg-rzp/15 px-3 py-2 text-[12.5px] leading-snug text-ink">${text}</p>
+    </div>`;
+  }
+  return `<div class="mt-2.5 overflow-hidden rounded-md border border-line">
+    <div class="border-b border-line bg-surface2 px-3 py-2">
+      <p class="text-[12px] font-semibold">Your Urban Basket order is waiting</p>
+      <p class="text-[11px] text-subtle">orders@urbanbasket.in · to customer</p>
+    </div>
+    <p class="bg-surface px-3 py-2.5 text-[12.5px] leading-snug text-muted">${text}</p>
+  </div>`;
+}
+
+const feedList = $('#feedList');
+const feedEvents = [];
+function pushEvent(ev, atTop=true){
+  feedEvents.unshift(ev);
+  const wrap = document.createElement('div');
+  wrap.innerHTML = eventCard(ev);
+  const node = wrap.firstElementChild;
+  if (atTop) feedList.prepend(node); else feedList.append(node);
+  while (feedList.children.length > 24) feedList.lastElementChild.remove();
+}
+
+/* seed feed */
+(function seedFeed(){
+  const seedTx = TX.slice(0, 7);
+  const now = new Date(NOW);
+  const seq = [];
+  seedTx.forEach((t, i) => {
+    const time = timeLabel(new Date(now - (i*4+1)*60000));
+    if (t.status === 'recovered'){
+      seq.push({ stage:'LEARN', icon:ICONS.win, time, title:`Recovered ${inr(t.amount)} from ${t.name.split(' ')[0]}`,
+        reasoning:`Payment link paid ${t.recoverMins} minutes after the ${CHANNELS[t.channel].label} nudge. Logged as a win for ${REASONS[t.reason].plural} → ${CHANNELS[t.channel].label} → ${t.delayLabel}; that play's rolling recovery rate moved to ${Math.round(REASONS[t.reason].rate*100)}%.`,
+        meta:[`<span class="font-mono">${t.id}</span>`, `${t.city}`, `${t.method}`] });
+    } else {
+      seq.push({ stage:'ACT', icon:ICONS.act, time, title:`Nudged ${t.name.split(' ')[0]} on ${CHANNELS[t.channel].label} · ${inr(t.amount)}`,
+        reasoning: t.reasoning, link:`rzp.io/l/ub-${t.short}`, message:t.message, channel:t.channel,
+        meta:[`Confidence ${t.confidence.toFixed(2)}`, `${REASONS[t.reason].label}`, `Attempt ${t.attempt}`] });
+    }
+  });
+  seq.reverse().forEach(e => pushEvent(e, true));
+})();
+
+/* rolling stream */
+let feedPaused = false;
+$('#pauseFeed').addEventListener('click', () => {
+  feedPaused = !feedPaused;
+  $('#pauseLabel').textContent = feedPaused ? 'Resume' : 'Pause';
+  toast(feedPaused ? 'Feed paused. The agent keeps working.' : 'Feed resumed.');
+});
+function randomEvent(){
+  const t = pickTrue(TX);
+  const r = REASONS[t.reason];
+  const time = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const kind = Math.random();
+  if (kind < .34) return { stage:'DETECT', icon:ICONS.detect, time,
+    title:`Failed ${t.method} payment · ${inr(t.amount)} · ${t.city}`,
+    reasoning:`Webhook <span class="font-mono">payment.failed</span> received 240ms after the attempt. Error code mapped to ${r.low} with 0.94 certainty; queued for a decision.`,
+    meta:[`<span class="font-mono">${t.id}</span>`, t.name, r.label] };
+  if (kind < .68) return { stage:'DECIDE', icon:ICONS.decide, time,
+    title:`Chose ${CHANNELS[t.channel].label} ${t.delayLabel} for ${t.name.split(' ')[0]}`,
+    reasoning: t.reasoning, meta:[`Confidence ${t.confidence.toFixed(2)}`, `${r.play}`] };
+  if (kind < .88) return { stage:'ACT', icon:ICONS.act, time,
+    title:`Payment link created and sent · ${inr(t.amount)}`,
+    reasoning:`Created a Razorpay Payment Link pre-filled with ${t.name.split(' ')[0]}'s cart and a 48-hour expiry, then sent it on ${CHANNELS[t.channel].label}. ${r.why.charAt(0).toUpperCase()+r.why.slice(1)}.`,
+    link:`rzp.io/l/ub-${t.short}`, message:t.message, channel:t.channel, meta:[t.city, t.method] };
+  return { stage:'LEARN', icon:ICONS.win, time,
+    title:`Recovered ${inr(t.amount)} from ${t.name.split(' ')[0]}`,
+    reasoning:`Link paid ${t.recoverMins} minutes after the nudge. ${r.label} via ${CHANNELS[t.channel].label} is now the top play for this reason at ${Math.round(r.rate*100)}% across ${180 + Math.floor(Math.random()*400)} samples.`,
+    meta:[`<span class="font-mono">${t.id}</span>`, `+${inr(t.amount)}`] };
+}
+setInterval(() => { if (!feedPaused && !simRunning) { pushEvent(randomEvent()); if (currentView !== 'feed'){ const b=$('#feedBadge'); b.hidden=false; b.textContent = Math.min(99, parseInt(b.textContent||'0',10)+1); } } }, 7000);
+
+/* ════════════════════════ 10. simulation ════════════════════════ */
+let simRunning = false;
+const modalScrim = $('#modalScrim'), modal = $('#modal');
+let lastFocus = null;
+function openModal(){
+  lastFocus = document.activeElement;
+  $('#simReason').innerHTML = REASON_KEYS.map(k => `<option value="${k}">${REASONS[k].label}</option>`).join('');
+  $('#simCustomer').innerHTML = CUSTOMERS.map(([n,c],i) => `<option value="${i}">${n} · ${c}</option>`).join('');
+  modalScrim.classList.remove('opacity-0','pointer-events-none');
+  modal.classList.remove('scale-95');
+  setTimeout(()=>$('#simReason').focus(), 60);
+}
+function closeModal(){
+  modalScrim.classList.add('opacity-0','pointer-events-none');
+  modal.classList.add('scale-95');
+  lastFocus && lastFocus.focus();
+}
+$('#triggerBtnTop').addEventListener('click', openModal);
+$('#triggerBtn2').addEventListener('click', openModal);
+$('#modalClose').addEventListener('click', closeModal);
+$('#modalCancel').addEventListener('click', closeModal);
+modalScrim.addEventListener('click', e => { if (e.target === modalScrim) closeModal(); });
+
+$('#simRun').addEventListener('click', () => {
+  const reason = $('#simReason').value;
+  const amount = clamp(parseInt($('#simAmount').value || '1249', 10), 99, 500000);
+  const method = $('#simMethod').value;
+  const [name, city] = CUSTOMERS[parseInt($('#simCustomer').value, 10)];
+  closeModal();
+  go('feed');
+  runSimulation({ reason, amount, method, name, city });
+});
+
+function runSimulation(cfg){
+  if (simRunning) return;
+  simRunning = true;
+  const r = REASONS[cfg.reason];
+  const first = cfg.name.split(' ')[0];
+  const channel = cfg.reason === 'CART_ABANDONED' || cfg.reason === 'CARD_EXPIRED' ? 'email' : 'whatsapp';
+  const short = Math.random().toString(36).slice(2,7);
+  const tx = { ...cfg, channel, short, id:'pay_S' + Math.random().toString(36).slice(2,10).toUpperCase(),
+    upiApp:pickTrue(UPI_APPS), bank:pickTrue(BANKS), last4:String(1000+Math.floor(Math.random()*8999)),
+    product:pickTrue(PRODUCTS), confidence: clamp(r.rate + .2 + Math.random()*.1, .45, .95),
+    delaySec: cfg.reason==='CART_ABANDONED'?2520:cfg.reason==='INSUFFICIENT_FUNDS'?10800:90,
+    openRate: 40 + Math.floor(Math.random()*55), recoverMins: 2 + Math.floor(Math.random()*9), attempt:1 };
+  tx.delayLabel = tx.delaySec >= 3600 ? `after ${Math.round(tx.delaySec/3600)}h` : tx.delaySec >= 600 ? `after ${Math.round(tx.delaySec/60)} min` : `within ${tx.delaySec}s`;
+  tx.message = messageFor(tx);
+  tx.reasoning = reasoningFor(tx);
+  const now = () => new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const pct = Math.round(r.rate*100);
+
+  const steps = [
+    { at:0, stage:0, ev:{ stage:'DETECT', icon:ICONS.detect, time:now(),
+        title:`Failed ${cfg.method} payment · ${inr(cfg.amount)} · ${cfg.city}`,
+        reasoning:`Webhook <span class="font-mono">payment.failed</span> received for ${cfg.name}. Raw gateway error captured, order held open, customer contact resolved from the Razorpay customer record in 240ms.`,
+        meta:[`<span class="font-mono">${tx.id}</span>`, cfg.method, cfg.city] } },
+    { at:1300, stage:1, ev:{ stage:'DIAGNOSE', icon:ICONS.diagnose, time:now(),
+        title:`Classified as ${r.label}`,
+        reasoning:`Gateway error mapped to <span class="font-mono">${cfg.reason}</span> at 0.94 certainty. This reason recovers ${pct}% historically, so it is worth chasing. ${first} has ${tx.openRate}% open rate on past nudges and is inside the 2-per-day nudge budget.`,
+        meta:[`<span class="font-mono">${cfg.reason}</span>`, `Historic recovery ${pct}%`] } },
+    { at:2900, stage:2, ev:{ stage:'DECIDE', icon:ICONS.decide, time:now(),
+        title:`Strategy: ${r.play}`,
+        reasoning: tx.reasoning, meta:[`Confidence ${tx.confidence.toFixed(2)}`, CHANNELS[channel].label, tx.delayLabel] } },
+    { at:4600, stage:3, ev:{ stage:'ACT', icon:ICONS.act, time:now(),
+        title:`Payment link created and nudge sent`,
+        reasoning:`Created a Razorpay Payment Link for ${inr(cfg.amount)} with a 48-hour expiry and ${first}'s saved cart attached, then delivered the message on ${CHANNELS[channel].label}.`,
+        link:`rzp.io/l/ub-${short}`, message:tx.message, channel, meta:[`${inr(cfg.amount)}`, 'Expires in 48h'] } },
+    { at:7200, stage:4, ev:null },
+  ];
+
+  steps.forEach(s => setTimeout(() => {
+    activeStage = s.stage; renderPipeline();
+    if (s.ev) pushEvent(s.ev);
+    if (s.stage === 4){
+      const won = Math.random() < r.rate + .18;
+      pushEvent(won
+        ? { stage:'LEARN', icon:ICONS.win, time:now(), title:`Recovered ${inr(cfg.amount)} from ${first} 🎉`,
+            reasoning:`Link paid ${tx.recoverMins} minutes after the nudge. Outcome scored as a win for ${r.plural} → ${CHANNELS[channel].label} → ${tx.delayLabel}; the agent nudged that play's weight up for the next matching failure.`,
+            meta:[`+${inr(cfg.amount)}`, `${tx.recoverMins}m to recover`, 'Play reinforced'] }
+        : { stage:'LEARN', icon:ICONS.learn, time:now(), title:`No payment yet — fallback scheduled`,
+            reasoning:`${first} opened the link but did not pay. A single SMS fallback is queued for 4 hours from now, inside quiet-hours rules. If that fails, the agent stops — a third nudge costs more trust than it recovers.`,
+            meta:['Fallback: SMS', 'In 4h', 'Nudge budget 2/2'] });
+      if (won){ saved += cfg.amount; $('#moneySaved').textContent = inr(saved); toast(`Recovered ${inr(cfg.amount)} from ${first}.`); }
+      else toast(`Fallback queued for ${first}.`);
+      setTimeout(() => { activeStage = -1; renderPipeline(); simRunning = false; }, 1400);
+    }
+  }, reduceMotion ? s.at/6 : s.at));
+}
+
+/* ════════════════════════ 11. recoveries table ════════════════════════ */
+$('#fStatus').innerHTML = `<option value="">All statuses</option>` + Object.entries(STATUSES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+$('#fReason').innerHTML = `<option value="">All reasons</option>` + REASON_KEYS.map(k=>`<option value="${k}">${REASONS[k].label}</option>`).join('');
+$('#fChannel').innerHTML = `<option value="">All channels</option>` + Object.entries(CHANNELS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+
+function filtered(){
+  const q = $('#fSearch').value.trim().toLowerCase();
+  const s = $('#fStatus').value, r = $('#fReason').value, c = $('#fChannel').value;
+  return TX.filter(t =>
+    (!s || t.status === s) && (!r || t.reason === r) && (!c || t.channel === c) &&
+    (!q || t.name.toLowerCase().includes(q) || t.city.toLowerCase().includes(q) || t.id.toLowerCase().includes(q)));
+}
+function renderTable(){
+  const rows = filtered();
+  $('#fCount').textContent = `${rows.length} of ${TX.length} payments`;
+  $('#txEmpty').hidden = rows.length > 0;
+  $('#txBody').innerHTML = rows.map(t => `
+    <tr class="txrow" tabindex="0" role="button" data-id="${t.id}" aria-label="Open details for ${t.name}, ${inr(t.amount)}">
+      <td class="px-4 py-3 font-mono text-[11.5px] text-muted">${t.id}</td>
+      <td class="px-4 py-3">
+        <div class="flex items-center gap-2.5">
+          <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface3 text-[10.5px] font-semibold text-muted">${t.initials}</span>
+          <span class="min-w-0"><span class="block truncate font-medium">${t.name}</span><span class="block text-[11.5px] text-subtle">${t.city}</span></span>
+        </div>
+      </td>
+      <td class="px-4 py-3 text-right"><span class="font-semibold tnum">${inr(t.amount)}</span><span class="ml-1.5 inline-flex align-middle text-subtle">${methodIcon(t.method)}</span></td>
+      <td class="px-4 py-3"><span class="badge ${toneClass[REASONS[t.reason].tone]}">${REASONS[t.reason].label}</span></td>
+      <td class="px-4 py-3">${channelBadge(t.channel)} <span class="ml-1 text-[11.5px] text-subtle">${t.delayLabel}</span></td>
+      <td class="px-4 py-3">${statusBadge(t.status)}</td>
+      <td class="px-4 py-3 text-right text-[12px] text-subtle tnum">${agoLabel(t.minsAgo)}</td>
+    </tr>`).join('');
+  $$('#txBody tr').forEach(tr => {
+    tr.addEventListener('click', () => openDrawer(tr.dataset.id));
+    tr.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openDrawer(tr.dataset.id); } });
+  });
+}
+['#fSearch','#fStatus','#fReason','#fChannel'].forEach(s => $(s).addEventListener('input', renderTable));
+$('#fClear').addEventListener('click', () => { $('#fSearch').value=''; $('#fStatus').value=''; $('#fReason').value=''; $('#fChannel').value=''; renderTable(); });
+renderTable();
+
+/* ════════════════════════ 12. drawer ════════════════════════ */
+const drawer = $('#drawer'), drawerScrim = $('#drawerScrim');
+let drawerFocus = null;
+function timelineStep({ icon, tone, title, time, body, last }){
+  return `<li class="relative pl-11 pb-5 ${last?'':''}">
+    ${last ? '' : '<span class="tl-line"></span>'}
+    <span class="absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full ${toneClass[tone]}">${icon}</span>
+    <div class="flex items-baseline gap-2">
+      <h4 class="text-[13.5px] font-semibold">${title}</h4>
+      <span class="ml-auto shrink-0 text-[11.5px] text-subtle tnum">${time}</span>
+    </div>
+    <div class="mt-1.5 text-[12.5px] leading-relaxed text-muted">${body}</div>
+  </li>`;
+}
+function openDrawer(id){
+  const t = TX.find(x => x.id === id); if (!t) return;
+  const r = REASONS[t.reason];
+  const t0 = new Date(t.failedAt);
+  const tm = k => timeLabel(new Date(t0.getTime() + k));
+  const outcome = t.status === 'recovered'
+    ? { icon:ICONS.win, tone:'success', title:`Payment recovered · ${inr(t.amount)}`, time: tm((t.delaySec + t.recoverMins*60)*1000),
+        body:`${t.name.split(' ')[0]} paid the link ${t.recoverMins} minutes after the nudge, on ${t.method === 'Card' ? 'UPI instead of the failed card' : t.method}. Order released to fulfilment automatically. Total time from failure to money in: <span class="font-semibold text-ink tnum">${Math.round(t.delaySec/60) + t.recoverMins} min</span>.` }
+    : t.status === 'lost'
+    ? { icon:ICONS.learn, tone:'danger', title:'Not recovered · nudge budget spent', time: tm((t.delaySec + 48*3600)*1000),
+        body:`No payment inside the 48-hour window. The agent stopped after ${t.attempt} nudge${t.attempt>1?'s':''} rather than spend more of ${t.name.split(' ')[0]}'s goodwill. Outcome logged against the ${r.plural} → ${CHANNELS[t.channel].label} play.` }
+    : t.status === 'scheduled'
+    ? { icon:ICONS.decide, tone:'violet', title:'Nudge scheduled', time: tm(t.delaySec*1000),
+        body:`Queued to send ${t.delayLabel}. ${t.reason === 'INSUFFICIENT_FUNDS' ? 'Timed for the 1st-of-month salary window, where this reason recovers 58% against 19% mid-month.' : 'Held to respect quiet hours (22:00–08:00 IST).'}` }
+    : { icon:ICONS.act, tone:'warning', title:'Waiting on the customer', time: tm(t.delaySec*1000),
+        body:`Link delivered and opened${t.openRate>60?' twice':''}. The agent is holding a single SMS fallback for 4 hours from now; if there's still no payment it will stop.` };
+
+  $('#drawerBody').innerHTML = `
+    <div class="sticky top-0 z-10 flex items-start gap-3 border-b border-line bg-surface/95 p-5 backdrop-blur">
+      <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-surface3 text-[13px] font-semibold text-muted">${t.initials}</span>
+      <div class="min-w-0">
+        <h2 id="drawerTitle" class="truncate text-[17px] font-semibold tracking-[-.01em]">${t.name}</h2>
+        <p class="truncate text-[12.5px] text-muted">${t.city} · ${t.phone} · <span class="font-mono">${t.id}</span></p>
+      </div>
+      <button id="drawerClose" class="ml-auto shrink-0 rounded-md p-2 text-muted hover:bg-surface2 hover:text-ink" aria-label="Close details">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-3 gap-px border-b border-line bg-line">
+      <div class="bg-surface p-4"><p class="eyebrow text-subtle">Amount</p><p class="mt-1 text-[19px] font-bold tnum">${inr(t.amount)}</p></div>
+      <div class="bg-surface p-4"><p class="eyebrow text-subtle">Status</p><p class="mt-1.5">${statusBadge(t.status)}</p></div>
+      <div class="bg-surface p-4"><p class="eyebrow text-subtle">Method</p><p class="mt-1 flex items-center gap-1.5 text-[14px] font-medium">${methodIcon(t.method)} ${t.method}</p></div>
+    </div>
+
+    <div class="p-5">
+      <h3 class="eyebrow mb-4 text-subtle">Agent timeline</h3>
+      <ol class="relative">
+        ${timelineStep({ icon:ICONS.detect, tone:'danger', title:'Payment failed', time: tm(0),
+          body:`<span class="font-mono text-[11.5px]">payment.failed</span> webhook received. ${t.method === 'UPI' ? `${t.upiApp} collect request on ${t.bank}` : t.method === 'Card' ? `Card ending ${t.last4} on ${t.bank}` : `${t.bank} netbanking session`}. Order held open, not cancelled.` })}
+        ${timelineStep({ icon:ICONS.diagnose, tone:'warning', title:`Diagnosed: ${r.label}`, time: tm(1400),
+          body:`Gateway error mapped to <span class="font-mono text-[11.5px]">${t.reason}</span> with 0.94 certainty. This reason recovers <span class="font-semibold text-ink">${Math.round(r.rate*100)}%</span> historically — above the 15% chase threshold, so it was queued for a decision.` })}
+        ${timelineStep({ icon:ICONS.decide, tone:'violet', title:'Decided the play', time: tm(1400 + t.decideMs),
+          body:`<p class="mb-2.5">${t.reasoning}</p>
+                <div class="rounded-md border border-line bg-surface2 p-3">
+                  <p class="eyebrow mb-2 text-subtle">Confidence</p>${confidenceBar(t.confidence)}
+                  <div class="mt-3 grid grid-cols-2 gap-3 text-[12px]">
+                    <div><p class="text-subtle">Strategy</p><p class="mt-0.5 font-medium text-ink">${r.play}</p></div>
+                    <div><p class="text-subtle">Timing</p><p class="mt-0.5 font-medium text-ink">${t.delayLabel}</p></div>
+                  </div>
+                </div>` })}
+        ${timelineStep({ icon:ICONS.act, tone:'info', title:'Payment link created', time: tm(1400 + t.decideMs + 900),
+          body:`Razorpay Payment Link for ${inr(t.amount)}, 48-hour expiry, cart contents preserved.
+                <div class="mt-2 flex items-center gap-2 rounded-md border border-line bg-surface2 px-3 py-2">
+                  <span class="truncate font-mono text-[11.5px] text-rzp">rzp.io/l/ub-${t.short}</span>
+                  <span class="ml-auto shrink-0 rounded-sm bg-success-soft px-1.5 py-0.5 text-[10px] font-semibold text-success">201 Created</span>
+                </div>` })}
+        ${timelineStep({ icon:ICONS.act, tone: CHANNELS[t.channel].tone, title:`Sent on ${CHANNELS[t.channel].label}`, time: tm(t.delaySec*1000),
+          body: whatsappPreview(t.message, t.channel, tm(t.delaySec*1000)) })}
+        ${timelineStep({ ...outcome, last:true })}
+      </ol>
+
+      <div class="mt-2 flex flex-wrap gap-2">
+        <button class="flex-1 rounded-md bg-rzp px-3 py-2.5 text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-rzp-bright" data-toast="Nudge re-sent on ${CHANNELS[t.channel].label}.">Re-send nudge</button>
+        <button class="flex-1 rounded-md border border-line bg-surface2 px-3 py-2.5 text-[13px] font-semibold transition-colors duration-150 hover:border-lineStrong" data-toast="Recovery stopped for ${t.name}.">Stop recovery</button>
+      </div>
+      <p class="mt-3 text-center text-[11.5px] text-subtle">Order <span class="font-mono">order_${t.short.toUpperCase()}9K</span> · ${t.product} · attempt ${t.attempt}</p>
+    </div>`;
+
+  drawerFocus = document.activeElement;
+  drawer.classList.remove('translate-x-full');
+  drawerScrim.classList.remove('opacity-0','pointer-events-none');
+  drawer.focus();
+  $('#drawerClose').addEventListener('click', closeDrawer);
+  $$('[data-toast]', drawer).forEach(b => b.addEventListener('click', () => { toast(b.dataset.toast); closeDrawer(); }));
+}
+function closeDrawer(){
+  drawer.classList.add('translate-x-full');
+  drawerScrim.classList.add('opacity-0','pointer-events-none');
+  drawerFocus && drawerFocus.focus();
+}
+drawerScrim.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!modalScrim.classList.contains('pointer-events-none')) closeModal();
+  else if (!drawer.classList.contains('translate-x-full')) closeDrawer();
+  else closeSidebarFn();
+});
+/* focus trap for drawer + modal */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const open = !modalScrim.classList.contains('pointer-events-none') ? modal
+             : !drawer.classList.contains('translate-x-full') ? drawer : null;
+  if (!open) return;
+  const f = $$('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])', open).filter(el => !el.disabled && el.offsetParent !== null);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length-1];
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+/* ════════════════════════ 13. learning ════════════════════════ */
+const MATRIX = {};
+REASON_KEYS.forEach(k => {
+  const base = REASONS[k].rate;
+  MATRIX[k] = {
+    whatsapp: { rate: clamp(base * 1.0, .05, .8),  n: 120 + Math.floor(rnd()*420) },
+    sms:      { rate: clamp(base * 0.62, .04, .7), n: 60 + Math.floor(rnd()*220) },
+    email:    { rate: clamp(base * 0.41, .03, .6), n: 80 + Math.floor(rnd()*260) },
+  };
+});
+MATRIX.CART_ABANDONED.email.rate = .31; MATRIX.CART_ABANDONED.whatsapp.rate = .24;
+MATRIX.CARD_EXPIRED.email.rate = .34;
+(function renderMatrix(){
+  $('#matrixBody').innerHTML = REASON_KEYS.map(k => {
+    const row = MATRIX[k];
+    const best = Object.entries(row).sort((a,b)=>b[1].rate-a[1].rate)[0];
+    const cell = (ch) => {
+      const { rate, n } = row[ch];
+      const a = clamp(rate / .8, .08, 1);
+      const isBest = best[0] === ch;
+      return `<td class="rounded-md p-0 text-center align-middle">
+        <div class="rounded-md px-2 py-2.5 ${isBest ? 'ring-1 ring-inset ring-success/60':''}" style="background:rgb(18 183 106 / ${a.toFixed(2)})">
+          <span class="block text-[13px] font-bold tnum ${a > .5 ? 'text-white' : ''}">${Math.round(rate*100)}%</span>
+          <span class="block text-[10.5px] tnum ${a > .5 ? 'text-white/70' : 'text-muted'}">n=${n}</span>
+        </div></td>`;
+    };
+    return `<tr>
+      <td class="rounded-md bg-surface2 px-3 py-2.5"><span class="block text-[13px] font-medium">${REASONS[k].label}</span><span class="block font-mono text-[10.5px] text-subtle">${k}</span></td>
+      ${cell('whatsapp')}${cell('sms')}${cell('email')}
+      <td class="rounded-md bg-surface2 px-3 py-2.5 text-[12px] text-muted">${REASONS[k].play}</td>
+    </tr>`;
+  }).join('');
+})();
+
+const INSIGHTS = [
+  { tag:'Channel', tone:'success', title:'WhatsApp within 10 minutes recovers 2.3× more OTP timeouts than email',
+    body:'OTP timeouts sent to WhatsApp inside 10 minutes recover 71%. The same customers on email recover 31%. The agent now routes every OTP timeout to WhatsApp first and only falls back to SMS.',
+    evidence:'n = 1,842 · confidence 0.94 · adopted 6 Feb' },
+  { tag:'Timing', tone:'info', title:'Insufficient-funds retries on the 1st–3rd succeed 58% vs 19% mid-month',
+    body:'Balance follows salary, not reminders. The agent holds insufficient-funds recoveries until the salary window when the failure lands after the 10th, instead of nudging into an empty account.',
+    evidence:'n = 964 · confidence 0.91 · adopted 28 Jan' },
+  { tag:'Retry', tone:'warning', title:'Never retry the same card after an issuer decline',
+    body:'Straight card retries after CARD_DECLINED succeed 8% of the time and add a second decline to the customer’s record. Offering UPI instead converts at 34%. Card retry is now disabled for this reason.',
+    evidence:'n = 611 · confidence 0.88 · adopted 2 Feb' },
+  { tag:'Bank health', tone:'violet', title:'Waiting out HDFC downtime beats retrying by 41 points',
+    body:'During a bank outage, immediate retries recover 21%. Holding until the bank health signal clears and then nudging recovers 62%. The agent now polls bank health before every BANK_DOWN decision.',
+    evidence:'n = 388 · confidence 0.86 · adopted 11 Feb' },
+  { tag:'Frequency', tone:'danger', title:'A third nudge loses more customers than it recovers',
+    body:'Nudge three lifts recovery by 1.4 points and raises WhatsApp opt-outs by 3.9 points. The agent caps every customer at two nudges per 24 hours regardless of amount.',
+    evidence:'n = 2,204 · confidence 0.96 · adopted 19 Jan' },
+  { tag:'Copy', tone:'success', title:'Naming the cart item lifts abandoned-cart recovery by 9 points',
+    body:'"Your cold-pressed oil bundle is still in your cart" recovers 31% against 22% for a generic "complete your payment". The agent now injects the top cart line item into every abandoned-cart nudge.',
+    evidence:'n = 1,120 · confidence 0.89 · adopted 9 Feb' },
+];
+$('#insightGrid').innerHTML = INSIGHTS.map((i, idx) => `
+  <article class="card p-5 shadow-raised" style="animation:riseIn .32s cubic-bezier(.16,1,.3,1) ${idx*40}ms both">
+    <div class="mb-3 flex items-center gap-2">
+      <span class="badge ${toneClass[i.tone]}">${i.tag}</span>
+      <span class="ml-auto inline-flex items-center gap-1 text-[11px] font-medium text-success">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Adopted
+      </span>
+    </div>
+    <h3 class="text-[14.5px] font-semibold leading-snug tracking-[-.01em]">${i.title}</h3>
+    <p class="mt-2 text-[12.5px] leading-relaxed text-muted">${i.body}</p>
+    <p class="mt-3.5 border-t border-line pt-3 font-mono text-[11px] text-subtle">${i.evidence}</p>
+  </article>`).join('');
+
+/* ════════════════════════ 14. settings interactions ════════════════════════ */
+$$('.switch').forEach(sw => sw.addEventListener('click', () => {
+  const on = sw.getAttribute('aria-checked') === 'true';
+  sw.setAttribute('aria-checked', String(!on));
+  toast(`${sw.getAttribute('aria-label')} ${!on ? 'enabled' : 'disabled'}.`);
+}));
+$('#maxNudges').addEventListener('input', e => $('#maxNudgesVal').textContent = e.target.value);
+$$('input[name="autonomy"]').forEach(r => r.addEventListener('change', () => {
+  toast(`Autonomy set to “${r.closest('.radiocard').querySelector('span.font-semibold').firstChild.textContent.trim()}”.`);
+}));
+
+/* ════════════════════════ 15. toast ════════════════════════ */
+let toastTimer;
+function toast(msg){
+  const el = $('#toast');
+  el.innerHTML = `<div class="flex items-center gap-2.5">
+    <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-success-soft text-success">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </span><p class="text-[13px]">${msg}</p></div>`;
+  el.classList.remove('opacity-0','translate-y-4');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add('opacity-0','translate-y-4'), 3200);
+}
+
+/* ════════════════════════ 16. init ════════════════════════ */
+buildOverviewCharts();
+const hash = location.hash.slice(1);
+if (['overview','feed','recoveries','learning','settings'].includes(hash)) go(hash);
+window.addEventListener('resize', () => { if (window.innerWidth >= 1024) $('#sidebar').classList.remove('-translate-x-full'); else $('#sidebar').classList.add('-translate-x-full'); });
+</script>
+</body>
+</html>

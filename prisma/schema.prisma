@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id           String        @id @default(cuid())
+  name         String
+  customers    Customer[]
+  transactions Transaction[]
+}
+
+model Customer {
+  id           String        @id @default(cuid())
+  merchantId   String
+  merchant     Merchant      @relation(fields: [merchantId], references: [id])
+  name         String
+  phone        String
+  email        String
+  city         String
+  language     String        @default("en")
+  segment      String        @default("regular")
+  optedOut     Boolean       @default(false)
+  transactions Transaction[]
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  merchantId        String
+  merchant          Merchant          @relation(fields: [merchantId], references: [id])
+  customerId        String
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  amountPaise       Int
+  currency          String            @default("INR")
+  method            String
+  status            String            @default("FAILED")
+  failureReason     String
+  razorpayOrderId   String?           @unique
+  razorpayPaymentId String?           @unique
+  errorCode         String?
+  errorDescription  String?
+  createdAt         DateTime          @default(now())
+  recoveredAt       DateTime?
+  isDemo            Boolean           @default(false)
+  simulationRunId   String?
+  attempts          RecoveryAttempt[]
+  events            AgentEvent[]
+
+  @@index([status, createdAt])
+}
+
+model RecoveryAttempt {
+  id                          String         @id @default(cuid())
+  transactionId               String
+  transaction                 Transaction    @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  strategy                    String
+  channel                     String
+  timingBucket                String
+  scheduledAt                 DateTime
+  sentAt                      DateTime?
+  paymentLinkId               String?        @unique
+  paymentLinkUrl              String?
+  message                     String
+  reasoning                   String
+  confidence                  Float
+  expectedRecoveryProbability Float
+  outcome                     String         @default("PENDING")
+  attribution                 String?
+  recoveredPaymentId          String?
+  recoveredAt                 DateTime?
+  attemptNo                   Int
+  messages                    MessageEvent[]
+
+  @@unique([transactionId, attemptNo])
+  @@index([outcome, scheduledAt])
+}
+
+model AgentEvent {
+  id            String       @id @default(cuid())
+  type          String
+  title         String
+  detail        Json
+  transactionId String?
+  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+
+  @@index([createdAt])
+}
+
+model MessageEvent {
+  id        String          @id @default(cuid())
+  attemptId String
+  attempt   RecoveryAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  channel   String
+  message   String
+  provider  String
+  createdAt DateTime        @default(now())
+}
+
+model LearningStat {
+  id           String @id @default(cuid())
+  reason       String
+  channel      String
+  timingBucket String
+  successes    Int    @default(0)
+  failures     Int    @default(0)
+
+  @@unique([reason, channel, timingBucket])
+}
+
+model LlmCache {
+  key       String   @id
+  message   String
+  reasoning String
+  createdAt DateTime @default(now())
+}
+
+model WebhookReceipt {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+
+model SimulationRun {
+  id          String    @id @default(cuid())
+  seed        Int
+  n           Int
+  processed   Int       @default(0)
+  recovered   Int       @default(0)
+  status      String    @default("RUNNING")
+  error       String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+}

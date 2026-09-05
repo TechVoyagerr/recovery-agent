@@ -1,0 +1,46 @@
+{
+  "name": "razorpay-recovery-agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NEXT_DIST_DIR=.next-dev next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src scripts",
+    "seed": "tsx scripts/setup-db.ts",
+    "simulate": "tsx scripts/simulate.ts",
+    "worker": "tsx scripts/worker.ts",
+    "test": "vitest run",
+    "postinstall": "DATABASE_URL=file:./dev.db prisma generate",
+    "setup": "npm install && npm run seed",
+    "demo": "npm run setup && npm run simulate -- --n 1000 --seed 42"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "dotenv": "^17.4.2",
+    "next": "^15.5.25",
+    "openai": "^7.10.0",
+    "razorpay": "^2.9.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22.20.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15.5.25",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.13",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
+  },
+  "overrides": {
+    "postcss": "^8.5.23",
+    "deepmerge-ts": "^8.0.0"
+  }
+}
