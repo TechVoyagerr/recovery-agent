@@ -141,7 +141,7 @@ export function OverviewPage() {
           label="Recovery rate"
           value={recoveryRate}
           format={(n) => `${n.toFixed(1)}%`}
-          meta={`${num(s?.recovered ?? 0)} of ${num(s?.totalAttempted ?? 0)}`}
+          meta={`${num(s?.recovered ?? 0)} of ${num(s?.totalFailed ?? 0)}`}
           loading={first}
         />
         <KpiCard

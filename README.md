@@ -16,7 +16,8 @@ Requires Node.js 22 and npm. The empty credential values in `.env.example` are p
 
 ```bash
 [ -f .env.local ] || cp .env.example .env.local
-npm run setup
+npm run demo
+# Optional reproducibility check in a separate database:
 npm run simulate -- --n 1000 --seed 42
 npm test
 npm run build
@@ -25,7 +26,7 @@ npm run dev
 npm run worker
 ```
 
-Open http://localhost:3000. `setup` installs dependencies, pushes the Prisma schema and seeds 200 synthetic customers. `npm run demo` combines setup and the exact batch above. CLI simulation rebuilds only its disposable `prisma/simulation.db`, independently of dashboard data in `prisma/dev.db`. Use the dashboard simulator or `POST /api/simulate` to populate the dashboard. API simulations preserve existing data and learning; reset the demo before comparing API runs. Never run two CLI simulations together.
+Open http://localhost:3000. `setup` installs dependencies, pushes the Prisma schema and seeds 200 synthetic customers. `npm run demo` runs setup and populates an empty dashboard database with 1,000 synthetic failures (seed 42), preserving existing dashboard transactions. `npm run dev` synchronizes the schema and generated client before starting, and clears interrupted simulation runs. CLI simulation rebuilds only its disposable `prisma/simulation.db`, independently of dashboard data in `prisma/dev.db`. Use the dashboard simulator or `POST /api/simulate` to populate the dashboard. API simulations preserve existing data and learning; reset the demo before comparing API runs. Never run two CLI simulations together.
 
 Next development output uses `.next-dev`, production builds use `.next`. `.env.local`, databases and logs are gitignored; `.env.example` is tracked. Configure payment credentials only for intentional live use. Production mutation APIs require `Authorization: Bearer <DEMO_API_TOKEN>` unless `DEMO_PUBLIC=true`.
 
@@ -59,7 +60,7 @@ The deterministic rule engine is primary. Structured gateway reasons take preced
 
 | Reason | Action |
 | --- | --- |
-| Insufficient funds | Next 1st–3rd salary window in India time |
+| Insufficient funds | Next 1st-3rd salary window in India time |
 | Bank down / UPI app error | Wait 15 minutes, suggest another bank / app |
 | OTP timeout / card expired / network drop | Immediate hosted checkout, suggest the relevant alternative |
 | Card declined / unknown | One neutral alternative-method reminder after 30 minutes |
@@ -148,7 +149,7 @@ The worker polls every five seconds. Process crashes can leave stale simulation 
 
 ## Tests
 
-`npm test`: **3 test files passed, 58 tests passed**. Coverage includes failure classification, reason policies, consent, timing, learning, JSON/form opt-out, dispatch refusal, original-payment non-attribution, matching-link credit, replay protection, amount mismatch and production demo authorization. Integration tests create and remove an isolated temporary SQLite database.
+`npm test`: **3 test files passed, 59 tests passed**. Coverage includes failure classification, reason policies, consent, timing, learning, JSON/form opt-out, dispatch refusal, original-payment non-attribution, matching-link credit, replay protection, amount mismatch and production demo authorization. Integration tests create and remove an isolated temporary SQLite database.
 
 `npm run build` includes lint and TypeScript checks.
 

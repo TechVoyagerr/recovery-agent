@@ -18,7 +18,7 @@ export function api(handler: () => Promise<Response>): Promise<Response> {
       return Response.json({ error: "Not found" }, { status: 404 });
     console.error(
       "API request failed",
-      error instanceof Error ? error.name : "UnknownError",
+      error,
     );
     return Response.json({ error: "Request failed" }, { status: 500 });
   });

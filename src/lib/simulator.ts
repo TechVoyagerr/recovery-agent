@@ -150,7 +150,8 @@ export async function executeRun(
       data: { status: "COMPLETED", completedAt: new Date() },
     });
     await event("SIMULATION_COMPLETED", "Simulation complete", { runId });
-  } catch {
+  } catch (error) {
+    console.error("Simulation failed", error);
     await db.simulationRun.updateMany({
       where: { id: runId },
       data: {

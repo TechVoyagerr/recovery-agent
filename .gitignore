@@ -58,3 +58,6 @@ prisma/*.db-*
 *.db-journal
 .next
 phase2-*.log
+
+# Browser verification artifacts
+.playwright-cli/

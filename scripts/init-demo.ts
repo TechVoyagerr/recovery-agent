@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+config({ path: ".env.local", quiet: true });
 // Uses the same DATABASE_URL as Next, never the disposable CLI simulation database.
 async function main() {
   const { db } = await import("../src/lib/db");

@@ -13,7 +13,8 @@
     "test": "vitest run",
     "postinstall": "DATABASE_URL=file:./dev.db prisma generate",
     "setup": "npm install && npm run seed",
-    "demo": "npm run setup && npm run simulate -- --n 1000 --seed 42"
+    "demo": "npm run setup && tsx scripts/init-demo.ts",
+    "predev": "tsx scripts/setup-db.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

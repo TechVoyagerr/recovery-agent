@@ -112,7 +112,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
             fill="url(#gradFailed)"
             dot={false}
             activeDot={{ r: 3, strokeWidth: 0 }}
-            animationDuration={200}
+            isAnimationActive={false}
           />
           <Area
             type="monotone"
@@ -122,7 +122,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
             fill="url(#gradRecovered)"
             dot={false}
             activeDot={{ r: 3, strokeWidth: 0 }}
-            animationDuration={200}
+            isAnimationActive={false}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -224,7 +224,7 @@ export function ChannelChart({ data }: { data: Stats["byChannel"] }) {
               );
             }}
           />
-          <Bar dataKey="ratePct" fill={BLUE} radius={[2, 2, 0, 0]} maxBarSize={28} animationDuration={200} />
+          <Bar dataKey="ratePct" fill={BLUE} radius={[2, 2, 0, 0]} maxBarSize={28} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
     </div>

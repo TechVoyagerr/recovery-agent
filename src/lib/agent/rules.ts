@@ -26,7 +26,7 @@ const policies: Record<FailureReason, [string, TimingBucket, string, string]> =
     INSUFFICIENT_FUNDS: [
       "SALARY_DAY_RETRY",
       "salary",
-      "The issuer reported insufficient funds, so repeating the request now is unlikely to help. A gentle reminder during the next 1st–3rd salary window gives the customer time to replenish their balance.",
+      "The issuer reported insufficient funds, so repeating the request now is unlikely to help. A gentle reminder during the next 1st-3rd salary window gives the customer time to replenish their balance.",
       "complete your order when convenient, using another account if you prefer",
     ],
     BANK_DOWN: [

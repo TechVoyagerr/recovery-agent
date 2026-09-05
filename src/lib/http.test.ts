@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { demoGuard } from "./http";
+import { api, demoGuard } from "./http";
 
 afterEach(() => vi.unstubAllEnvs());
 describe("production demo authorization", () => {
@@ -21,5 +21,20 @@ describe("production demo authorization", () => {
     expect(demoGuard(new Request("http://test/api/reset", {
       headers: { authorization: "Bearer test-token" },
     }))).toBeNull();
+  });
+});
+
+describe("API diagnostics", () => {
+  it("logs the original server error while keeping its details out of the response", async () => {
+    const error = new Error("Prisma validation failed: unknown argument attribution");
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const response = await api(async () => { throw error; });
+      expect(response.status).toBe(500);
+      expect(await response.json()).toEqual({ error: "Request failed" });
+      expect(log).toHaveBeenCalledWith("API request failed", error);
+    } finally {
+      log.mockRestore();
+    }
   });
 });
