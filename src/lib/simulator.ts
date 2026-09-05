@@ -105,10 +105,7 @@ export async function executeRun(
         const virtualCreatedAt = new Date(
           base.getTime() + Math.floor(rng() * 7 * 86400000),
         );
-        // Reuse the existing random draw to preserve seeded outcome sequences.
-        const createdAt = speed === "live"
-          ? new Date(start - ((virtualCreatedAt.getTime() - base.getTime()) / (7 * 86400000)) * 30 * 60000)
-          : virtualCreatedAt;
+        const createdAt = speed === "live" ? new Date() : virtualCreatedAt;
         // Pre-draw outcome randomness so decisions and DB IDs cannot change the PRNG sequence.
         const draws = [rng(), rng(), rng(), rng()];
         const tx = await db.transaction.create({

@@ -36,10 +36,9 @@ function TooltipShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function shortBucket(bucket: string, showMinutes = false): string {
+function shortBucket(bucket: string): string {
   const d = new Date(bucket);
   if (Number.isNaN(d.getTime())) return bucket;
-  if (showMinutes) return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
   if (d.getHours() === 0) return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
   return d.toLocaleTimeString("en-IN", { hour: "numeric", hour12: true });
 }
@@ -57,16 +56,10 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
   if (!data?.length) {
     return <EmptyState title="No timeline yet" />;
   }
-  const singlePoint = data.length === 1;
-  const chartData = singlePoint ? [
-    { bucket: new Date(new Date(data[0].bucket).getTime() - 60000).toISOString(), failed: 0, recovered: 0, revenueRecoveredPaise: 0 },
-    ...data,
-  ] : data;
-  const showMinutes = new Date(chartData[1].bucket).getTime() - new Date(chartData[0].bucket).getTime() < 3600000;
   return (
     <div className="h-[260px] px-2 pb-5">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+        <AreaChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="gradFailed" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={DANGER} stopOpacity={0.08} />
@@ -80,7 +73,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
           <CartesianGrid stroke="rgb(var(--border))" vertical={false} />
           <XAxis
             dataKey="bucket"
-            tickFormatter={(bucket) => shortBucket(bucket, showMinutes)}
+            tickFormatter={shortBucket}
             tick={AXIS}
             tickLine={false}
             axisLine={false}
@@ -99,8 +92,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
                       day: "2-digit",
                       month: "short",
                       hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
+                      hour12: true,
                     })}
                   </p>
                   <p className="tnum mt-1.5 text-[12.5px] text-danger">{num(p.failed)} failed</p>
@@ -118,7 +110,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
             stroke={DANGER}
             strokeWidth={1.5}
             fill="url(#gradFailed)"
-            dot={singlePoint || data.length <= 2 ? { r: 3, strokeWidth: 0 } : false}
+            dot={false}
             activeDot={{ r: 3, strokeWidth: 0 }}
             isAnimationActive={false}
           />
@@ -128,7 +120,7 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
             stroke={SUCCESS}
             strokeWidth={1.5}
             fill="url(#gradRecovered)"
-            dot={singlePoint || data.length <= 2 ? { r: 3, strokeWidth: 0 } : false}
+            dot={false}
             activeDot={{ r: 3, strokeWidth: 0 }}
             isAnimationActive={false}
           />
