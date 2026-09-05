@@ -22,25 +22,23 @@ export async function getStats(): Promise<Stats> {
       revenueRecoveredPaise: number;
     }
   >();
-  const hour = (d: Date) => {
-    const x = new Date(d);
-    x.setUTCMinutes(0, 0, 0);
-    const bucket = x.toISOString();
-    if (!timeline.has(bucket))
-      timeline.set(bucket, {
-        bucket,
-        failed: 0,
-        recovered: 0,
-        revenueRecoveredPaise: 0,
-      });
-    return timeline.get(bucket)!;
-  };
+  const hourMs = 60 * 60 * 1000;
+  const latest = txs.reduce((max, t) => Math.max(max, t.createdAt.getTime()), -Infinity);
+  const end = Math.floor((Number.isFinite(latest) ? latest : Date.now()) / hourMs) * hourMs;
+  for (let i = 23; i >= 0; i--) {
+    const bucket = new Date(end - i * hourMs).toISOString();
+    timeline.set(bucket, { bucket, failed: 0, recovered: 0, revenueRecoveredPaise: 0 });
+  }
+  const hour = (d: Date) => timeline.get(new Date(Math.floor(d.getTime() / hourMs) * hourMs).toISOString());
   for (const t of failures) {
-    hour(t.createdAt).failed++;
+    const failedBucket = hour(t.createdAt);
+    if (failedBucket) failedBucket.failed++;
     if (isRecovered(t) && t.recoveredAt) {
       const b = hour(t.recoveredAt);
-      b.recovered++;
-      b.revenueRecoveredPaise += t.amountPaise;
+      if (b) {
+        b.recovered++;
+        b.revenueRecoveredPaise += t.amountPaise;
+      }
     }
   }
   return {

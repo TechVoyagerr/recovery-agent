@@ -1,8 +1,9 @@
 import { reset } from "@/lib/seed";
-import { recoverStaleRuns } from "@/lib/simulator";
+import { recoverStaleRuns, seedDemoBaseline } from "@/lib/simulator";
 import { exclusive } from "@/lib/agent/service";
 import { clearLlmMemory } from "@/lib/agent/llm";
 import { api, demoGuard } from "@/lib/http";
+export const maxDuration = 300;
 export async function POST(request: Request) {
   return api(async () => {
     const guard = demoGuard(request);
@@ -15,7 +16,9 @@ export async function POST(request: Request) {
           { status: 409 },
         );
       clearLlmMemory();
-      return Response.json(await reset());
+      const result = await reset();
+      await seedDemoBaseline();
+      return Response.json(result);
     });
   });
 }

@@ -61,6 +61,9 @@ export function outcomeProbability(
   );
 }
 export async function createRun(n: number, seed = 42, speed: "instant" | "live" = "instant") {
+  if (speed === "live" && await db.transaction.count() < 500) {
+    await seedDemoBaseline();
+  }
   if (speed !== "live") await seedData();
   const run = await db.simulationRun.create({ data: { n, seed } });
   activeRuns.set(run.id, Date.now());
@@ -69,6 +72,7 @@ export async function createRun(n: number, seed = 42, speed: "instant" | "live" 
 export async function executeRun(
   runId: string,
   speed: "instant" | "live" = "instant",
+  lockHeld = false,
 ) {
   try {
     const run = await db.simulationRun.findUniqueOrThrow({
@@ -95,7 +99,8 @@ export async function executeRun(
         const delay = start + (i / run.n) * 60000 - Date.now();
         if (delay > 0) await new Promise((r) => setTimeout(r, delay));
       }
-      await exclusive(async () => {
+      const withLock = lockHeld ? (fn: () => Promise<void>) => fn() : exclusive;
+      await withLock(async () => {
         if (!activeRuns.has(runId)) throw new Error("Simulation worker is no longer active");
         const reason = REASONS[Math.floor(rng() * REASONS.length)];
         const customer = customers[Math.floor(rng() * customers.length)];
@@ -199,4 +204,12 @@ export async function executeRun(
     activeRuns.delete(runId);
   }
   return db.simulationRun.findUnique({ where: { id: runId } });
+}
+
+// Caller holds exclusive() throughout baseline creation and execution.
+export async function seedDemoBaseline() {
+  const run = await createRun(1000, 42, "instant");
+  const result = await executeRun(run.id, "instant", true);
+  if (result?.status !== "COMPLETED") throw new Error("Demo baseline simulation failed");
+  return result;
 }

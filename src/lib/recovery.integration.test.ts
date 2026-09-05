@@ -169,3 +169,45 @@ it("recovers orphaned and timed-out simulations while preserving an active worke
     clock.mockRestore();
   }
 });
+
+describe("contiguous demo timeline", () => {
+  function assertTimeline(stats: Awaited<ReturnType<typeof getStats>>) {
+    expect(stats.timeline).toHaveLength(24);
+    const times = stats.timeline.map((b) => Date.parse(b.bucket));
+    expect(new Set(times).size).toBe(24);
+    for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBe(3600000);
+  }
+  it("seeds an empty base before live and keeps 24 contiguous buckets after reset + live", async () => {
+    const { reset } = await import("./seed");
+    const { createRun, executeRun, seedDemoBaseline } = await import("./simulator");
+    await service.exclusive(async () => {
+      await reset();
+      await seedDemoBaseline();
+    });
+    const baseline = await getStats();
+    expect(baseline.totalFailed).toBe(1000);
+    expect(baseline.recovered).toBeGreaterThan(300);
+    assertTimeline(baseline);
+    const live = await service.exclusive(() => createRun(1, 42, "live"));
+    expect((await executeRun(live.id, "live"))?.status).toBe("COMPLETED");
+    const stats = await getStats();
+    expect(stats.totalFailed).toBe(1001);
+    assertTimeline(stats);
+    const latest = await db.transaction.findFirstOrThrow({ orderBy: { createdAt: "desc" } });
+    expect(Date.parse(stats.timeline[23].bucket)).toBe(Math.floor(latest.createdAt.getTime() / 3600000) * 3600000);
+    await service.exclusive(async () => {
+      await reset();
+      const run = await createRun(1, 42, "live");
+      expect(await db.transaction.count()).toBe(1000);
+      expect((await executeRun(run.id, "live", true))?.status).toBe("COMPLETED");
+    });
+    assertTimeline(await getStats());
+  }, 120000);
+  it("zero fills an empty dataset and gaps without extending to future recoveries", async () => {
+    assertTimeline(await getStats());
+    await failure();
+    const stats = await getStats();
+    assertTimeline(stats);
+    expect(stats.timeline.filter((b) => b.failed === 0)).toHaveLength(23);
+  });
+});

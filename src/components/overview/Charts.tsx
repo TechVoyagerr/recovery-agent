@@ -76,9 +76,9 @@ export function RecoveryTimelineChart({ data }: { data: Stats["timeline"] }) {
             tick={AXIS}
             tickLine={false}
             axisLine={false}
-            minTickGap={40}
+            interval={2}
           />
-          <YAxis tick={AXIS} tickLine={false} axisLine={false} width={32} allowDecimals={false} />
+          <YAxis domain={[0, "auto"]} tick={AXIS} tickLine={false} axisLine={false} width={32} allowDecimals={false} />
           <Tooltip
             cursor={{ stroke: "rgb(var(--border-strong))" }}
             content={({ active, payload }) => {
