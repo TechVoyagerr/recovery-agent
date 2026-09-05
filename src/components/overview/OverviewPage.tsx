@@ -9,7 +9,7 @@ import { KpiCard } from "@/components/overview/KpiCard";
 import { ChannelChart, ReasonBars, RecoveryTimelineChart } from "@/components/overview/Charts";
 
 export function OverviewPage() {
-  const { data, error, loading, refresh } = usePoll<Stats>("/api/stats", 5000);
+  const { data, error, loading, refresh } = usePoll<Stats>("/api/stats", 1000);
   const [runId, setRunId] = React.useState<string | null>(null);
   const [progress, setProgress] = React.useState<SimulationProgress | null>(null);
   const [busy, setBusy] = React.useState<"sim" | "reset" | null>(null);
@@ -54,7 +54,7 @@ export function OverviewPage() {
       const res = await fetch("/api/simulate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ n: 1000, speed: "live" }),
+        body: JSON.stringify({ n: 200, speed: "live" }),
       });
       if (!res.ok) {
         const failure = await res.json();
@@ -89,7 +89,7 @@ export function OverviewPage() {
 
   const s = data;
   const first = loading && !s;
-  const total = progress?.n ?? 1000;
+  const total = progress?.n ?? 200;
   const done = Math.min(progress?.processed ?? 0, total);
   const percentDone = total ? (done / total) * 100 : 0;
   const running = Boolean(runId);
