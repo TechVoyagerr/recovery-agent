@@ -22,14 +22,12 @@ export async function getStats(): Promise<Stats> {
       revenueRecoveredPaise: number;
     }
   >();
-  const times = failures.flatMap((t) => [
-    t.createdAt.getTime(),
-    ...(isRecovered(t) && t.recoveredAt ? [t.recoveredAt.getTime()] : []),
-  ]);
-  const first = times.reduce((a, b) => Math.min(a, b), Infinity);
-  const last = times.reduce((a, b) => Math.max(a, b), -Infinity);
-  const span = last - first;
-  const bucketMs = span < 3 * 3600000 ? 60000 : span < 24 * 3600000 ? 15 * 60000 : 3600000;
+  const now = Date.now();
+  const windowStart = now - 24 * 3600000;
+  const recentActivity = failures.some((t) =>
+    t.createdAt.getTime() >= now - 3600000 && t.createdAt.getTime() <= now);
+  const bucketMs = recentActivity ? 15 * 60000 : 3600000;
+  const inWindow = (date: Date) => date.getTime() >= windowStart && date.getTime() <= now;
   const bucketAt = (d: Date) => {
     const bucket = new Date(Math.floor(d.getTime() / bucketMs) * bucketMs).toISOString();
     if (!timeline.has(bucket))
@@ -41,14 +39,12 @@ export async function getStats(): Promise<Stats> {
       });
     return timeline.get(bucket)!;
   };
-  if (times.length) {
-    const start = Math.floor(first / bucketMs) * bucketMs;
-    const end = Math.max(Math.floor(last / bucketMs) * bucketMs, start + bucketMs);
-    for (let time = start; time <= end; time += bucketMs) bucketAt(new Date(time));
+  for (let time = Math.floor(windowStart / bucketMs) * bucketMs; time <= now; time += bucketMs) {
+    bucketAt(new Date(time));
   }
   for (const t of failures) {
-    bucketAt(t.createdAt).failed++;
-    if (isRecovered(t) && t.recoveredAt) {
+    if (inWindow(t.createdAt)) bucketAt(t.createdAt).failed++;
+    if (isRecovered(t) && t.recoveredAt && inWindow(t.recoveredAt)) {
       const b = bucketAt(t.recoveredAt);
       b.recovered++;
       b.revenueRecoveredPaise += t.amountPaise;

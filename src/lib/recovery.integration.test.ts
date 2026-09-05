@@ -182,11 +182,32 @@ describe("simulation preserves existing data", () => {
     const { createRun, executeRun } = await import("./simulator");
     const run = await service.exclusive(() => createRun(10));
     expect(await getStats()).toMatchObject({ totalFailed: before.totalFailed, recovered: before.recovered });
+    const started = Date.now();
     await executeRun(run.id);
+    const seeded = await db.transaction.findMany({ where: { simulationRunId: run.id } });
+    expect(seeded.every((t) => t.createdAt.getTime() >= started - 24 * 3600000 && t.createdAt.getTime() <= Date.now())).toBe(true);
+    expect(new Set(seeded.map((t) => Math.floor(t.createdAt.getTime() / 3600000))).size).toBeGreaterThan(5);
+    expect(seeded.every((t) => !t.recoveredAt || (t.recoveredAt >= t.createdAt && t.recoveredAt.getTime() <= Date.now()))).toBe(true);
     const after = await getStats();
     expect(after.totalFailed).toBe(before.totalFailed + 10);
     expect(after.recovered).toBeGreaterThanOrEqual(before.recovered);
     expect(await db.transaction.findUnique({ where: { id: tx.id } })).not.toBeNull();
     expect(await db.agentEvent.count()).toBeGreaterThan(events);
   });
+});
+
+
+it("limits the chart to 24 hours while retaining all-time KPIs", async () => {
+  const now = Date.now();
+  const old = await failure();
+  await db.transaction.update({ where: { id: old.id }, data: { createdAt: new Date(now - 48 * 3600000), razorpayPaymentId: null, razorpayOrderId: null } });
+  let stats = await getStats();
+  expect(stats.totalFailed).toBe(1);
+  expect(stats.timeline.length).toBeGreaterThanOrEqual(24);
+  expect(stats.timeline.reduce((sum, bucket) => sum + bucket.failed, 0)).toBe(0);
+  await failure();
+  stats = await getStats();
+  expect(stats.totalFailed).toBe(2);
+  expect(stats.timeline.length).toBeGreaterThanOrEqual(96);
+  expect(stats.timeline.reduce((sum, bucket) => sum + bucket.failed, 0)).toBe(1);
 });
