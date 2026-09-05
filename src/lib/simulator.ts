@@ -82,7 +82,8 @@ export async function executeRun(
     const latest = speed === "live"
       ? await db.transaction.findFirst({ orderBy: { createdAt: "desc" }, select: { createdAt: true } })
       : null;
-    const liveStart = latest?.createdAt.getTime() ?? base.getTime();
+    const liveEnd = latest?.createdAt.getTime() ?? base.getTime();
+    const liveWindow = 12 * 60 * 60 * 1000;
     await event("SIMULATION_STARTED", "Recovery simulation started", {
       runId,
       n: run.n,
@@ -107,7 +108,8 @@ export async function executeRun(
         const simulatedOffset = Math.floor(rng() * 7 * 86400000);
         const createdAt = new Date(
           speed === "live"
-            ? liveStart + 1 + Math.floor((i / run.n) * 60000)
+            // One jittered timestamp per slot across the trailing 12 hours.
+            ? liveEnd - liveWindow + Math.floor(((i + simulatedOffset / (7 * 86400000)) / run.n) * liveWindow)
             : base.getTime() + simulatedOffset,
         );
         // Pre-draw outcome randomness so decisions and DB IDs cannot change the PRNG sequence.
