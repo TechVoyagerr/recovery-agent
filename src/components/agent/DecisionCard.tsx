@@ -5,14 +5,13 @@ import type { RecoveryAttempt, Transaction } from "@/lib/types";
 import {
   CHANNEL_TONE,
   channelLabel,
-  dateTime,
+  relative,
   money,
   methodLabel,
   outcomeTone,
   reasonLabel,
   statusLabel,
   statusTone,
-  timeOfDay,
 } from "@/components/lib/format";
 import { Badge, ConfidenceMeter, ReasoningBlock, cx } from "@/components/ui/primitives";
 import { MessageBubble } from "@/components/agent/MessageBubble";
@@ -66,7 +65,7 @@ export function DecisionCard({ txn }: { txn: Transaction }) {
             </p>
             <p className="mt-1 text-[12.5px] text-muted">
               {methodLabel(txn.method)} · {txn.customer?.name ?? "Customer"} ·{" "}
-              {dateTime(txn.createdAt)}
+              {relative(txn.createdAt)}
             </p>
           </Field>
 
@@ -106,7 +105,7 @@ export function DecisionCard({ txn }: { txn: Transaction }) {
                   message={attempt.message}
                   link={attempt.paymentLinkUrl}
                   to={txn.customer?.phone}
-                  sentAt={attempt.sentAt ? timeOfDay(attempt.sentAt) : "queued"}
+                  sentAt={attempt.sentAt ? relative(attempt.sentAt) : "queued"}
                 />
               </Field>
             </>

@@ -38,7 +38,7 @@ function TooltipShell({ children }: { children: React.ReactNode }) {
 
 function shortBucket(bucket: string): string {
   const d = new Date(bucket);
-  if (Number.isNaN(d.getTime())) return "—";
+  if (Number.isNaN(d.getTime())) return "-";
   return d.toLocaleTimeString("en-IN", { hour: "numeric", hour12: true });
 }
 

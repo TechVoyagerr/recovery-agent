@@ -9,7 +9,6 @@ import {
   REASON_OPTIONS,
   STATUS_OPTIONS,
   channelLabel,
-  dateTime,
   methodLabel,
   money,
   reasonLabel,
@@ -281,7 +280,7 @@ function RecoveryTimeline({ txn }: { txn: Transaction }) {
       </div>
 
       <ol className="pt-1">
-        <Step tone="danger" title="Payment failed" meta={dateTime(txn.createdAt)}>
+        <Step tone="danger" title="Payment failed" meta={relative(txn.createdAt)}>
           {txn.errorCode || txn.errorDescription ? (
             <p className="font-mono text-[11.5px] text-subtle">
               {[txn.errorCode, txn.errorDescription].filter(Boolean).join(" · ")}
@@ -301,7 +300,7 @@ function RecoveryTimeline({ txn }: { txn: Transaction }) {
                 <Step
                   tone="info"
                   title={`Decision · attempt ${a.attemptNo}`}
-                  meta={dateTime(a.scheduledAt)}
+                  meta={timeOfDay(a.scheduledAt)}
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge tone={CHANNEL_TONE[a.channel] ?? "info"} muted>
@@ -335,14 +334,14 @@ function RecoveryTimeline({ txn }: { txn: Transaction }) {
                 <Step
                   tone={a.sentAt ? "success" : "neutral"}
                   title={a.sentAt ? `Nudge sent · ${channelLabel(a.channel)}` : "Nudge queued"}
-                  meta={a.sentAt ? timeOfDay(a.sentAt) : dateTime(a.scheduledAt)}
+                  meta={a.sentAt ? relative(a.sentAt) : timeOfDay(a.scheduledAt)}
                 >
                   <MessageBubble
                     channel={a.channel}
                     message={a.message}
                     link={a.paymentLinkUrl}
                     to={txn.customer?.phone}
-                    sentAt={a.sentAt ? timeOfDay(a.sentAt) : "queued"}
+                    sentAt={a.sentAt ? relative(a.sentAt) : "queued"}
                   />
                 </Step>
 
@@ -361,7 +360,7 @@ function RecoveryTimeline({ txn }: { txn: Transaction }) {
                         ? "Awaiting the customer"
                         : `Attempt ${a.outcome.toLowerCase()}`
                   }
-                  meta={a.recoveredAt ? dateTime(a.recoveredAt) : undefined}
+                  meta={a.recoveredAt ? relative(a.recoveredAt) : undefined}
                   last={isLast}
                 />
               </React.Fragment>
