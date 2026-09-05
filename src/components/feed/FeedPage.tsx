@@ -298,6 +298,7 @@ function TriggerFailureModal({
       open={open}
       onClose={onClose}
       title="Trigger failure"
+      width="max-w-xl"
     >
       <form onSubmit={submit} className="space-y-4">
         <div>
@@ -324,12 +325,12 @@ function TriggerFailureModal({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 grid-cols-1 gap-4">
           <div>
             <p className="mb-2 text-[11px] uppercase tracking-[0.04em] text-subtle">
               Method
             </p>
-            <div className="flex gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {METHOD_OPTIONS.map((m) => (
                 <button
                   key={m}
