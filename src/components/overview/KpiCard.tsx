@@ -19,12 +19,16 @@ export function KpiCard({
   meta?: string;
   loading?: boolean;
 }) {
+  const [hasLoaded, setHasLoaded] = React.useState(!loading);
+  React.useEffect(() => {
+    if (!loading) setHasLoaded(true);
+  }, [loading]);
   const animated = useCountUp(value);
 
   return (
     <div className="rounded-[8px] border border-line bg-surface px-5 py-4">
       <p className="text-[11px] uppercase tracking-[0.04em] text-subtle">{label}</p>
-      {loading ? (
+      {loading && !hasLoaded ? (
         <Skeleton className="mt-3.5 h-8 w-28" />
       ) : (
         <p className="tnum mt-3 text-[30px] font-semibold leading-none tracking-[-0.02em] text-ink">

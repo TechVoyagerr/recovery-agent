@@ -60,8 +60,8 @@ export function outcomeProbability(
       (reason === "INSUFFICIENT_FUNDS" && timing !== "salary" ? 0.5 : 1),
   );
 }
-export async function createRun(n: number, seed = 42) {
-  await seedData();
+export async function createRun(n: number, seed = 42, speed: "instant" | "live" = "instant") {
+  if (speed !== "live") await seedData();
   const run = await db.simulationRun.create({ data: { n, seed } });
   activeRuns.set(run.id, Date.now());
   return run;
@@ -79,6 +79,10 @@ export async function executeRun(
     const start = Date.now();
     // Fixed virtual epoch keeps salary-window outcomes reproducible across calendar dates.
     const base = new Date("2026-07-27T00:00:00.000Z");
+    const latest = speed === "live"
+      ? await db.transaction.findFirst({ orderBy: { createdAt: "desc" }, select: { createdAt: true } })
+      : null;
+    const liveStart = latest?.createdAt.getTime() ?? base.getTime();
     await event("SIMULATION_STARTED", "Recovery simulation started", {
       runId,
       n: run.n,
@@ -100,8 +104,11 @@ export async function executeRun(
             ? "upi"
             : ["upi", "card", "netbanking", "wallet"][Math.floor(rng() * 4)];
         const amountPaise = (99 + Math.floor(rng() * 4901)) * 100;
+        const simulatedOffset = Math.floor(rng() * 7 * 86400000);
         const createdAt = new Date(
-          base.getTime() + Math.floor(rng() * 7 * 86400000),
+          speed === "live"
+            ? liveStart + 1 + Math.floor((i / run.n) * 60000)
+            : base.getTime() + simulatedOffset,
         );
         // Pre-draw outcome randomness so decisions and DB IDs cannot change the PRNG sequence.
         const draws = [rng(), rng(), rng(), rng()];

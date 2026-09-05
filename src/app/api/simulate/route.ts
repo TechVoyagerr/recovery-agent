@@ -24,7 +24,7 @@ export async function POST(request: Request) {
           { error: `Simulation ${activeRun.id} is still running (${activeRun.processed}/${activeRun.n} processed). Wait for it to finish before starting another.`, runId: activeRun.id },
           { status: 409 },
         );
-      const run = await createRun(body.n, body.seed);
+      const run = await createRun(body.n, body.seed, body.speed);
       after(() => executeRun(run.id, body.speed).then(() => {}));
       return Response.json({ runId: run.id, synthetic: true }, { status: 202 });
     });

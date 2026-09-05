@@ -87,7 +87,11 @@ export function OverviewPage() {
     }
   };
 
-  const s = data;
+  const [lastGoodStats, setLastGoodStats] = React.useState<Stats | null>(null);
+  React.useEffect(() => {
+    if (data) setLastGoodStats(data);
+  }, [data]);
+  const s = data ?? lastGoodStats;
   const first = loading && !s;
   const total = progress?.n ?? 1000;
   const done = Math.min(progress?.processed ?? 0, total);
