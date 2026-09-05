@@ -78,14 +78,8 @@ export async function executeRun(
     const rng = seededRandom(run.seed);
     const customers = await db.customer.findMany({ orderBy: { id: "asc" } });
     const start = Date.now();
-    const timestampRng = seededRandom(run.seed ^ 0x51f15e);
-    // Stratified weighted sampling covers the full day, with peaks in India time.
-    const hourMs = 3600000;
-    const slots = Array.from({ length: 24 }, (_, i) => {
-      const hour = new Date(start - 24 * hourMs + (i + 0.5) * hourMs + 330 * 60000).getUTCHours();
-      return hour >= 18 && hour < 23 ? 3 : hour >= 12 && hour < 15 ? 1.8 : 1;
-    });
-    const totalWeight = slots.reduce((sum, weight) => sum + weight, 0);
+    // Fixed virtual epoch keeps salary-window outcomes reproducible across calendar dates.
+    const base = new Date("2026-07-27T00:00:00.000Z");
     await event("SIMULATION_STARTED", "Recovery simulation started", {
       runId,
       n: run.n,
@@ -108,13 +102,13 @@ export async function executeRun(
             ? "upi"
             : ["upi", "card", "netbanking", "wallet"][Math.floor(rng() * 4)];
         const amountPaise = (99 + Math.floor(rng() * 4901)) * 100;
-        const timeDraw = rng(); // Preserve the seeded outcome draw sequence.
-        let position = ((i + timestampRng()) / run.n) * totalWeight;
-        let slot = 0;
-        while (slot < 23 && position >= slots[slot]) position -= slots[slot++];
+        const virtualCreatedAt = new Date(
+          base.getTime() + Math.floor(rng() * 7 * 86400000),
+        );
+        // Reuse the existing random draw to preserve seeded outcome sequences.
         const createdAt = speed === "live"
-          ? new Date(start - timeDraw * 30 * 60000)
-          : new Date(start - 24 * hourMs + (slot + position / slots[slot]) * hourMs);
+          ? new Date(start - ((virtualCreatedAt.getTime() - base.getTime()) / (7 * 86400000)) * 30 * 60000)
+          : virtualCreatedAt;
         // Pre-draw outcome randomness so decisions and DB IDs cannot change the PRNG sequence.
         const draws = [rng(), rng(), rng(), rng()];
         const tx = await db.transaction.create({
@@ -146,14 +140,8 @@ export async function executeRun(
             await exclusive(async () => {
               if (speed === "live") {
                 attempt.scheduledAt = new Date();
-              } else {
-                // Instant replay compresses long policy waits into the historical
-                // demo window; settlement still follows dispatch and creation.
-                const available = start - createdAt.getTime();
-                const delay = Math.min(60 * 60000, Math.max(0, attempt.scheduledAt.getTime() - createdAt.getTime()));
-                attempt.scheduledAt = new Date(createdAt.getTime() + Math.min(delay, available * (attemptNo === 2 ? 0.7 : 0.4)));
+                await db.recoveryAttempt.update({ where: { id: attempt.id }, data: { scheduledAt: attempt.scheduledAt } });
               }
-              await db.recoveryAttempt.update({ where: { id: attempt.id }, data: { scheduledAt: attempt.scheduledAt } });
               await dispatchAttempt(attempt.id, { mock: true, now: attempt.scheduledAt });
             });
             const ok =
@@ -166,8 +154,8 @@ export async function executeRun(
               );
             if (speed === "live") await new Promise((resolve) => setTimeout(resolve, 1000 + draws[(attemptNo - 1) * 2 + 1] * 2000));
             const outcomeAt = speed === "live" ? new Date() : new Date(
-              Math.min(start, attempt.scheduledAt.getTime() +
-                (2 + draws[(attemptNo - 1) * 2 + 1] * 45) * 60000),
+              attempt.scheduledAt.getTime() +
+                (2 + draws[(attemptNo - 1) * 2 + 1] * 45) * 60000,
             );
             const dispatched = await db.recoveryAttempt.findUniqueOrThrow({ where: { id: attempt.id } });
             await exclusive(() => settleAttempt(attempt.id, ok, outcomeAt, {
